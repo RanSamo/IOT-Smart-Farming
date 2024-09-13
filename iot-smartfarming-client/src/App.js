@@ -1,50 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
-import React, { useState, useEffect } from 'react';
-
-
+import React from 'react';
+import { Drawer, Typography, Box, Divider,Container,Grid } from '@mui/material/';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+import AutoFixHighTwoToneIcon from '@mui/icons-material/AutoFixHighTwoTone';
 
 function App() {
-  const [data, setData] = useState(null);
-  const [showData, setShowData] = useState(false);
-  const [x, setX] = useState(50);
-
-  useEffect(() => {
-    fetch('/api/data') // No need to include localhost:5000 if proxy is set up
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error('Error:', error));
-  }, []);
-
-  const printData = (mishtane) => {
-    console.log(mishtane);
-    setX(x+1);
-    console.log(x);
-    setShowData(true);
-    console.log(data);
-  }
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <button onClick={()=>(printData(100))}>Print Data</button>
-        <p>{x}</p>
-        {showData && <p>{data.message}</p>}
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ backgroundColor: '#f4f7fe', minHeight: '100vh', width: '100vw' }}>
+      <Drawer
+        variant="permanent"
+        sx={{ width: 300, flexShrink: 0, '& .MuiDrawer-paper': { width: 300 } }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', paddingTop: '80px', alignItems: 'center' }}>
+          <Typography variant="h4">OUR Company</Typography>
+          <Divider sx={{ width: '70%', marginY: 2 }} />
+          <Container sx={{display: 'flex',flexDirection:'row',paddingBottom:'30px'}}>
+            <HomeTwoToneIcon sx={{paddingRight:'20px'}}/>
+            <Typography variant="h6">Main Dashboard</Typography>
+          </Container>
+          <Container sx={{display: 'flex',flexDirection:'row'}}>
+            <AutoFixHighTwoToneIcon sx={{paddingRight:'20px'}}/>
+            <Typography variant="h6">something nice</Typography>
+          </Container>
+        </Box>
+      </Drawer>
     </div>
   );
 }
- 
+
 export default App;

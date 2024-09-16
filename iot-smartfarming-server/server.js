@@ -1,11 +1,25 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 5000;
+require('dotenv').config()
 
-app.get('/api/data', (req, res) => {
-   res.json({message:'Hello from Express!'});
-});
+const express = require('express')
+
+// routes calling
+const projectRoutes = require('./routes/projectroutes')
+// express app
+const app = express()
+
+// this might be redundant cause of the .env file, need to check.
+const port = process.env.PORT || 5000
+
+// middleware
+app.use(express.json())
+
+app.use((req, res, next) => {
+   console.log(req.path, req.method)
+   next()
+})  
+
+
+app.use(projectRoutes)
 
 app.listen(port, () => {
-   console.log(`Server is running on port ${port}`);
-});
+   console.log('server is running on port: ', port)})

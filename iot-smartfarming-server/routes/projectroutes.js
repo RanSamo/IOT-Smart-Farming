@@ -2,6 +2,18 @@ const express = require('express');
 
 const router = express.Router();
 
+const { sql, poolPromise } = require('../db'); //not sure this is the correct way to call our DB will investigate later.
+
+router.get('/projects', async (req, res) => { //not sure this is the correct way to call our DB will investigate later.
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query('SELECT * FROM Projects');
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+});
+
 // GET all data
 router.get('/api/data', (req, res) => {
     res.json({message:'GET all data'})

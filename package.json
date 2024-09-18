@@ -1,0 +1,15 @@
+{
+  "name": "iot-smart-farming",
+  "version": "1.0.0",
+  "scripts": {
+    "client": "cd iot-smartfarming-client && npm start",
+    "server": "cd iot-smartfarming-server && npm start",
+    "dev": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  },
+  "dependencies": {
+    "react-scripts": "^5.0.1"
+  }
+}

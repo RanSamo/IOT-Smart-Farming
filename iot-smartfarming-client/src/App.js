@@ -1,52 +1,110 @@
 import React from 'react';
-import { Grid, Card, CardContent, Typography, Box, List, ListItem, ListItemIcon, ListItemText,Divider } from '@mui/material';
-import { Dashboard, Settings, Sensors, BarChart, Thermostat, WaterDrop, Opacity, WbSunny, Science,Spa,WaterOutlined,Cloud } from '@mui/icons-material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Grid, Card, CardContent, Typography, Box, List, ListItem, ListItemIcon, ListItemText, Divider, Tooltip } from '@mui/material';
+import { Dashboard, Sensors, Thermostat, WaterDrop, Opacity, WbSunny, Science, Spa, WaterOutlined, Cloud } from '@mui/icons-material';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
-const App = () => {
-  // Sidebar component
-  const Sidebar = () => (
-    <Box sx={{ height: '100vh', padding: 2 }}>
-      {/* AGRO Data Text */}
-      <Typography variant="h6" gutterBottom sx={{textAlign: 'center',mt: 5,mb: 5}}>
-        AGRO Data
-      </Typography>
-      
-      {/* Divider below the text */}
-      <Divider sx={{ mb: 2 }} />
-  
-      {/* Buttons */}
-      <List>
-        <ListItem button>
-          <ListItemIcon><Dashboard /></ListItemIcon>
-          <ListItemText primary="Overview" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon><Sensors /></ListItemIcon>
-          <ListItemText primary="Insights" />
-        </ListItem>
-      </List>
-    </Box>
-  );
+// Configuration for each sensor and its respective conditions
+const sensorConditions = {
+  thermostat: [
+    { max: 25, color: '#d0f0c0' }, // Light green for < 25°C
+    { min: 26, max: 40, color: '#ffa07a' }, // Light orange for 26°C - 40°C
+    { min: 41, color: '#ffcccb' }, // Red for > 40°C
+  ],
+  water_drop: [
+    { max: 30, color: '#cceeff' }, // Light blue for < 30% humidity
+    { min: 31, max: 70, color: '#99dfff' }, // Blue for 31% - 70% humidity
+    { min: 71, color: '#6699ff' }, // Dark blue for > 70% humidity
+  ],
+  opacity: [
+    { max: 30, color: '#f4e1d2' }, // Light brown for < 30% soil moisture
+    { min: 31, max: 60, color: '#ffcc99' }, // Orange for 31% - 60% soil moisture
+    { min: 61, color: '#e68000' }, // Dark orange for > 60% soil moisture
+  ],
+  wb_sunny: [
+    { max: 200, color: '#fffacd' }, // Light yellow for < 200 lx
+    { min: 201, max: 500, color: '#ffe680' }, // Yellow for 201 lx - 500 lx
+    { min: 501, color: '#ffd700' }, // Gold for > 500 lx
+  ],
+  science: [
+    { max: 6, color: '#d4f1f9' }, // Light blue for pH < 6
+    { min: 6.1, max: 7, color: '#a8dadc' }, // Blue-green for pH 6.1 - 7
+    { min: 7.1, color: '#457b9d' }, // Dark blue for pH > 7
+  ],
+  spa: [
+    { value: 'Good', color: '#90ee90' }, // Green for Good
+    { value: 'Fair', color: '#ffff99' }, // Yellow for Fair
+    { value: 'Poor', color: '#ffcccb' }, // Red for Poor
+  ],
+  water_outlined: [
+    { value: 'Active', color: '#d0f0c0' }, // Light green for Active
+    { value: 'Inactive', color: '#ffcccb' }, // Red for Inactive
+  ],
+  cloud: [
+    { value: 'Sunny', color: '#ffe680' }, // Light yellow for Sunny
+    { value: 'Cloudy', color: '#d3d3d3' }, // Light grey for Cloudy
+    { value: 'Rainy', color: '#add8e6' }, // Light blue for Rainy
+  ],
+};
 
-  // Sensor card component
-  const SensorCard = ({ title, value, icon }) => {
-    const getIcon = (icon) => {
-      switch (icon) {
-        case 'thermostat': return <Thermostat />;
-        case 'water_drop': return <WaterDrop />;
-        case 'opacity': return <Opacity />;
-        case 'wb_sunny': return <WbSunny />;
-        case 'science': return <Science />;
-        case 'spa': return <Spa/>;
-        case 'water_outlined': return <WaterOutlined/>
-        case 'cloud': return <Cloud/>
-        default: return null;
+// Explanations for each sensor's color scheme
+const sensorTooltips = {
+  thermostat: "Green: <25°C, Orange: 26-40°C, Red: >40°C",
+  water_drop: "Light blue: <30%, Blue: 31-70%, Dark blue: >70%",
+  opacity: "Light brown: <30%, Orange: 31-60%, Dark orange: >60%",
+  wb_sunny: "Light yellow: <200 lx, Yellow: 201-500 lx, Gold: >500 lx",
+  science: "Light blue: pH < 6, Blue-green: pH 6.1 - 7, Dark blue: pH > 7",
+  spa: "Green: Good, Yellow: Fair, Red: Poor",
+  water_outlined: "Green: Active, Red: Inactive",
+  cloud: "Light yellow: Sunny, Grey: Cloudy, Light blue: Rainy",
+};
+
+// Function to get the background color based on the sensor type and value
+const getBackgroundColor = (icon, value) => {
+  const numericValue = parseFloat(value); // Extract the numeric part from the value (handles decimals too)
+  const conditions = sensorConditions[icon];
+
+  // Iterate over conditions and return the matching background color
+  if (conditions) {
+    for (const condition of conditions) {
+      const { min = -Infinity, max = Infinity, color, value: exactValue } = condition;
+      if (exactValue) {
+        if (value === exactValue) return color;
+      } else if (numericValue >= min && numericValue <= max) {
+        return color;
       }
-    };
+    }
+  }
 
-    return (
-      <Card sx={{ borderRadius: 3}}>
+  return '#fff'; // Default white background if no match is found
+};
+
+// Sidebar component
+const Sidebar = () => (
+  <Box sx={{ height: '100vh', padding: 2 }}>
+    <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', mt: 5, mb: 5 }}>
+      AGRO Data
+    </Typography>
+    <Divider sx={{ mb: 2 }} />
+    <List>
+      <ListItem button>
+        <ListItemIcon><Dashboard /></ListItemIcon>
+        <ListItemText primary="Overview" />
+      </ListItem>
+      <ListItem button>
+        <ListItemIcon><Sensors /></ListItemIcon>
+        <ListItemText primary="Insights" />
+      </ListItem>
+    </List>
+  </Box>
+);
+
+// Sensor card component
+const SensorCard = ({ title, value, icon }) => {
+  const tooltipText = sensorTooltips[icon] || "No information available";
+
+  return (
+    <Tooltip title={tooltipText} arrow>
+      <Card sx={{ borderRadius: 3, backgroundColor: getBackgroundColor(icon, value) }}>
         <CardContent>
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box>
@@ -57,95 +115,110 @@ const App = () => {
           </Box>
         </CardContent>
       </Card>
-    );
-  };
+    </Tooltip>
+  );
+};
 
-  // Farm map component
-  const FarmMap = () => (
-    <Card>
+// Function to return the correct icon
+const getIcon = (icon) => {
+  switch (icon) {
+    case 'thermostat': return <Thermostat />;
+    case 'water_drop': return <WaterDrop />;
+    case 'opacity': return <Opacity />;
+    case 'wb_sunny': return <WbSunny />;
+    case 'science': return <Science />;
+    case 'spa': return <Spa />;
+    case 'water_outlined': return <WaterOutlined />;
+    case 'cloud': return <Cloud />;
+    default: return null;
+  }
+};
+
+// Farm map component
+const FarmMap = () => (
+  <Card>
+    <CardContent>
+      <Typography variant="h6" gutterBottom>
+        Farm Map
+      </Typography>
+      <Typography variant="body2">
+        Real-time map with sensor locations goes here.
+      </Typography>
+    </CardContent>
+  </Card>
+);
+
+const OverallHealthChart = () => {
+  const data = [
+    { date: '2024-09-15', health: 85 },
+    { date: '2024-09-16', health: 82 },
+    { date: '2024-09-17', health: 88 },
+    { date: '2024-09-18', health: 90 },
+    { date: '2024-09-19', health: 87 },
+    { date: '2024-09-20', health: 91 },
+  ];
+
+  return (
+    <Card sx={{ height: '300px' }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
-          Farm Map
+          Overall Health Trend
         </Typography>
-        <Typography variant="body2">
-          {/* Mockup for now, but later you can add an actual map */}
-          Real-time map with sensor locations goes here.
-        </Typography>
+        <Box sx={{ height: 220, width: '100%' }}>
+          <ResponsiveContainer>
+            <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis domain={[0, 100]} />
+              <RechartsTooltip />
+              <Line type="monotone" dataKey="health" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        </Box>
       </CardContent>
     </Card>
   );
-  
-  const OverallHealthChart = () => {
-    const data = [
-      { date: '2024-09-15', health: 85 },
-      { date: '2024-09-16', health: 82 },
-      { date: '2024-09-17', health: 88 },
-      { date: '2024-09-18', health: 90 },
-      { date: '2024-09-19', health: 87 },
-      { date: '2024-09-20', health: 91 },
-    ];
+};
 
-    return (
-      <Card sx={{ height: '300px' }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Overall Health Trend
+// Main app component
+const App = () => (
+  <Grid container sx={{ height: '100vh', overflow: 'hidden' }}>
+    {/* Sidebar - 3 columns wide */}
+    <Grid item xs={1} sm={1.5}>
+      <Sidebar />
+    </Grid>
+    
+    {/* Main content - 9 columns wide */}
+    <Grid item xs={12} sm={10.5}>
+      <Box sx={{ p: 3, backgroundColor: '#eff2fa', minHeight: '100vh' }}>
+        {/* Header */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Smart Farming Dashboard
           </Typography>
-          <Box sx={{ height: 220, width: '100%' }}>
-            <ResponsiveContainer>
-              <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="health" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-        </CardContent>
-      </Card>
-    );
-  };
+          <Typography variant="subtitle1">
+            {new Date().toLocaleString()}
+          </Typography>
+        </Box>
 
-
-  return (
-    <Grid container sx={{ height: '100vh', overflow: 'hidden' }}>
-      {/* Sidebar - 3 columns wide */}
-      <Grid item xs={1} sm={1.5}>
-        <Sidebar />
-      </Grid>
-      
-      {/* Main content - 9 columns wide */}
-      <Grid item xs={12} sm={10.5}>
-        <Box sx={{ p: 3, backgroundColor:'#eff2fa', minHeight: '100vh'}}>
-          {/* Header */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-              Smart Farming Dashboard
-            </Typography>
-            <Typography variant="subtitle1">
-              {new Date().toLocaleString()}
-            </Typography>
-          </Box>
-
-          {/* Data Cards */}
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} md={3}>
-              <SensorCard title="Temperature" value="25°C" icon="thermostat" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <SensorCard title="Humidity" value="65%" icon="water_drop" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <SensorCard title="Soil Moisture" value="45%" icon="opacity" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <SensorCard title="Light Intensity" value="300 lx" icon="wb_sunny" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <SensorCard title="pH Level" value="6.8" icon="science" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+        {/* Data Cards */}
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <SensorCard title="Temperature" value="40°C" icon="thermostat" />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <SensorCard title="Humidity" value="65%" icon="water_drop" />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <SensorCard title="Soil Moisture" value="45%" icon="opacity" />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <SensorCard title="Light Intensity" value="300 lx" icon="wb_sunny" />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <SensorCard title="pH Level" value="6.8" icon="science" />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
             <SensorCard title="Crop Health" value="Good" icon="spa" />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -154,20 +227,20 @@ const App = () => {
           <Grid item xs={12} sm={6} md={3}>
             <SensorCard title="Weather Forecast" value="Sunny" icon="cloud" />
           </Grid>
-          </Grid>
-          {/* Map */}
-          <Grid container spacing={3} sx={{ mt: 3 }}>
+        </Grid>
+
+        {/* Map and Chart */}
+        <Grid container spacing={3} sx={{ mt: 3 }}>
           <Grid item xs={12} md={6}>
-          <OverallHealthChart />
+            <OverallHealthChart />
           </Grid>
           <Grid item xs={12} md={6}>
-          <FarmMap />
+            <FarmMap />
           </Grid>
         </Grid>
-        </Box>
-      </Grid>
+      </Box>
     </Grid>
-  );
-};
+  </Grid>
+);
 
 export default App;

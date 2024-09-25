@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 const express = require('express')
-const mongoose = require('mongoose')
 
 // routes calling
 const projectRoutes = require('./routes/projectroutes')
@@ -9,7 +8,7 @@ const projectRoutes = require('./routes/projectroutes')
 const app = express()
 
 // this might be redundant cause of the .env file, need to check.
-const port = 5000
+const port = process.env.PORT || 5000
 
 // middleware
 app.use(express.json())
@@ -22,21 +21,5 @@ app.use((req, res, next) => {
 
 app.use(projectRoutes)
 
-
-// connect localhost
-// app.listen(port, () => {
-//    console.log('listening on port:', port)   
-// })
-
-//connect to mongodb
-mongoose.connect(process.env.MONGO_URI)
-   .then(() => {
-      app.listen(port, () => {
-         console.log('connected to db & listening on port: ', port)})
-     
-   })
-   .catch((err) => {
-      console.log(err)
-   })
-
-
+app.listen(port, () => {
+   console.log('server is running on port: ', port)})

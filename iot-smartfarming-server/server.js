@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 
+
 // routes calling
 const projectRoutes = require('./routes/projectroutes')
 // express app
@@ -14,7 +15,7 @@ const port = 5000
 // middleware
 app.use(express.json())
 
-app.use((req, res, next) => {
+app.use((req, res, next) => {  
    console.log(req.path, req.method)
    next()
 })  
@@ -22,11 +23,6 @@ app.use((req, res, next) => {
 
 app.use(projectRoutes)
 
-
-// connect localhost
-// app.listen(port, () => {
-//    console.log('listening on port:', port)   
-// })
 
 //connect to mongodb
 mongoose.connect(process.env.MONGO_URI)

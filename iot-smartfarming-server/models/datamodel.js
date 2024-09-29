@@ -2,22 +2,42 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const projectSchema = new mongoose.Schema({ // the schema here is relevant to the MERN video, I need to make sure what data we want our db to have in it.
-    title:{
+const projectSchema = new mongoose.Schema({ // The schema contains the features we have in the dashboard Paz shared in the group chat
+    PropertyName:{
         type:String,
-        required:true
+        required:true //this must be added by the user.
     },
-    reps:{
-        type:Number,
-        required:true
+    CropName:{
+        type:String,
+        required:true //this must be added by the user.
     },
-    load:{
+    Temperature:{
         type:Number,
-        required:true
+        required:false //this might be generated randomly.
     },
-    sets:{
+    Humidity:{
         type:Number,
-        required:true
+        required:false //this might be generated randomly.
+    },
+    SoilMoisture:{
+        type:Number,
+        required:false //this might be generated randomly.
+    },
+    pHLevel:{
+        type:Number,
+        required:false //this might be generated randomly.
+    },
+    CropHealth:{
+        type:String,
+        required:false //this might be generated randomly.
+    },
+    IrrigationStatus:{
+        type:String,
+        required:false //this might be generated randomly.
+    },
+    WeatherForcest:{
+        type:String,
+        required:false //this might be generated randomly.
     }
 }, {timestamps:true})
 

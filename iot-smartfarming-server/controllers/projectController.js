@@ -24,12 +24,14 @@ const getSingleData = async (req, res) => {
 }
 
 // post new data
-const createData = async (req, res) => {
-    const { title, reps, load } = req.body;
-
+const createData = async (req, res) => { 
+    const { PropertyName ,CropName } = req.body;
+    // ==> WE HAVE MORE FIELDS IN THE SCHEMA, WE NEED TO ADD THEM HERE AS WELL
+    // OR AT LEAST DECIDE WHICH ARE MANDATORY AND WHICH ARE OPTIONAL.
+    
     // add to db
     try{
-        const newData = await projdata.create({ title, reps, load });
+        const newData = await projdata.create({ }); // need to check what and how to add the data to the DB.
         res.status(200).json(newData);
         console.log("Data added to database");
     }
@@ -39,7 +41,7 @@ const createData = async (req, res) => {
 }
 
 
-// delete data
+// delete data -  Works on deleting using id, might need to change to delete using other fields.
 const deleteData = async (req, res) => {
     const {id} = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No data with id: ${id}`); // catch invalid id.
@@ -51,7 +53,7 @@ const deleteData = async (req, res) => {
    
 }
 
-// update data
+// update data - Works on updating using id, might need to change to update using other fields.
 const updateData = async (req,res) =>{
     const {id} = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No data with id: ${id}`); // catch invalid id.

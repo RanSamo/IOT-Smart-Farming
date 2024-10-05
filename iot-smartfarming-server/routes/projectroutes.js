@@ -12,7 +12,7 @@ const router = express.Router();
 //router.get('/', getAllData);
 
 // GET last data
-router.get('/', getLastData); //TODO. This will be the ONLY get func cause we only need to GET the last data.
+router.get('/getLastData', getLastData); //TODO. This will be the ONLY get func cause we only need to GET the last data.
 
 // GET one data
 router.get('/:id', getSingleData);

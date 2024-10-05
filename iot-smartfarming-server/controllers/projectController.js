@@ -56,14 +56,14 @@ const createData = async (req, res) => {  // TODO. Need to generate the data to 
         return forecast[Math.floor(Math.random() * forecast.length)];
     }
     const data = {
-        Temperature: generateTemperature(),
-        Humidity: generateHumidity(),
-        SoilMoisture: generateSoilMoisture(),
-        LightIntensity: generateLightIntensity(),
-        pHLevel: generatepHLevel(),
-        CropHealth: generateCropHealth(),
-        IrrigationStatus: generateIrrigationStatus(),
-        WeatherForcest: generateWeatherForecast()
+        temperature: generateTemperature(),
+        humidity: generateHumidity(),
+        soilMoisture: generateSoilMoisture(),
+        lightIntensity: generateLightIntensity(),
+        phLevel: generatepHLevel(),
+        cropHealth: generateCropHealth(),
+        irrigationStatus: generateIrrigationStatus(),
+        weatherForecast: generateWeatherForecast()
     }
     // add to db
     try{

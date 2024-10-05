@@ -1,6 +1,7 @@
 const express = require('express');
 const { getAllData,
     getSingleData,
+    getLastData,
     createData,
     deleteData,
     updateData
@@ -8,7 +9,10 @@ const { getAllData,
 const router = express.Router();
 
 // GET all data
-router.get('/', getAllData);
+//router.get('/', getAllData);
+
+// GET last data
+router.get('/', getLastData); //TODO. This will be the ONLY get func cause we only need to GET the last data.
 
 // GET one data
 router.get('/:id', getSingleData);

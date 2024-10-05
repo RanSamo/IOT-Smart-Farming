@@ -1,4 +1,4 @@
-import {React,useState} from 'react';
+import {React,useState, useEffect} from 'react';
 import { Grid, Card, CardContent, Typography, Box, List, ListItem, ListItemIcon, ListItemText, Divider, Tooltip, Paper } from '@mui/material';
 import { Dashboard, Sensors, Thermostat, WaterDrop, Opacity, WbSunny, Science, Spa, WaterOutlined, Cloud } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
@@ -9,6 +9,41 @@ import OverallHealthChart from './components/OverallHealthChart'
 
 
   const Overview = () =>{
+
+    const [sensorData, setSensorData] = useState({
+      temperature: null,
+      humidity: null,
+      soilMoisture: null,
+      lightIntensity: null,
+      pHLevel: null,
+      cropHealth: null,
+      irrigationStatus: null,
+      weatherForecast: null,
+    });
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/getLatestData');
+          const data = await response.json();
+          setSensorData({
+            temperature: data.Temperature,
+            humidity: data.Humidity,
+            soilMoisture: data.SoilMoisture,
+            lightIntensity: data.LightIntensity,
+            pHLevel: data.PhLevel,
+            cropHealth: data.CropHealth,
+            irrigationStatus: data.IrrigationStatus,
+            weatherForecast: data.WeatherForecast,
+          });
+        } catch (error) {
+          console.error('Error fetching sensor data:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
     return (
     <Grid item xs={12} sm={12}>
       <Box sx={{ p: 3, backgroundColor: '#eff2fa', minHeight: '100vh' }}>
@@ -25,7 +60,7 @@ import OverallHealthChart from './components/OverallHealthChart'
         {/* Data Cards */}
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Temperature" value="40°C" icon="thermostat" />
+            <SensorCard title="Temperature" value={`${sensorData.temperature}°C`} icon="thermostat" />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <SensorCard title="Humidity" value="65%" icon="water_drop" />

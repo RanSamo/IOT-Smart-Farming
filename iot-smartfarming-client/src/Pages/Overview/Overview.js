@@ -24,17 +24,17 @@ import OverallHealthChart from './components/OverallHealthChart'
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await fetch('http://localhost:5000/getLatestData');
+          const response = await fetch('/getLastData');
           const data = await response.json();
           setSensorData({
-            temperature: data.Temperature,
-            humidity: data.Humidity,
-            soilMoisture: data.SoilMoisture,
-            lightIntensity: data.LightIntensity,
-            pHLevel: data.PhLevel,
-            cropHealth: data.CropHealth,
-            irrigationStatus: data.IrrigationStatus,
-            weatherForecast: data.WeatherForecast,
+            temperature: data.temperature,
+            humidity: data.humidity,
+            soilMoisture: data.soilMoisture,
+            lightIntensity: data.lightIntensity,
+            pHLevel: data.phLevel,
+            cropHealth: data.cropHealth,
+            irrigationStatus: data.irrigationStatus,
+            weatherForecast: data.weatherForecast,
           });
         } catch (error) {
           console.error('Error fetching sensor data:', error);
@@ -59,31 +59,31 @@ import OverallHealthChart from './components/OverallHealthChart'
 
         {/* Data Cards */}
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Temperature" value={`${sensorData.temperature}°C`} icon="thermostat" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Humidity" value="65%" icon="water_drop" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Soil Moisture" value="45%" icon="opacity" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Light Intensity" value="300 lx" icon="wb_sunny" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="pH Level" value="6.8" icon="science" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Crop Health" value="Good" icon="spa" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Irrigation Status" value="Active" icon="water_outlined" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SensorCard title="Weather Forecast" value="Sunny" icon="cloud" />
-          </Grid>
-        </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Temperature" value={`${sensorData.temperature}°C`} icon="thermostat" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Humidity" value={`${sensorData.humidity}%`} icon="water_drop" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Soil Moisture" value={`${sensorData.soilMoisture}%`} icon="opacity" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Light Intensity" value={`${sensorData.lightIntensity} lx`} icon="wb_sunny" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="pH Level" value={sensorData.pHLevel} icon="science" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Crop Health" value={sensorData.cropHealth} icon="spa" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Irrigation Status" value={sensorData.irrigationStatus} icon="water_outlined" />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SensorCard title="Weather Forecast" value={sensorData.weatherForecast} icon="cloud" />
+              </Grid>
+            </Grid>
 
         {/* Map and Chart */}
         <Grid container spacing={3} sx={{ mt: 3 }}>

@@ -12,35 +12,35 @@ const projectSchema = new mongoose.Schema({ // The schema contains the features 
         type:String,
         required:false 
     },*/
-    Temperature:{ // the range or most crops is between 20 to 30 degrees Celsius.
+    temperature:{ // the range or most crops is between 20 to 30 degrees Celsius.
         type:Number,
         required:false //this might be generated randomly.
     },
-    Humidity:{ //  the range for most crops is between 50% to 70%.
+    humidity:{ //  the range for most crops is between 50% to 70%.
         type:Number,
         required:false //this might be generated randomly.
     },
-    SoilMoisture:{ // the range for most crops is between 20% to 60%.
+    soilMoisture:{ // the range for most crops is between 20% to 60%.
         type:Number,
         required:false //this might be generated randomly.
     },
-    LightIntensity:{ // the range from 0 to 100 lux.
+    lightIntensity:{ // the range from 0 to 100 lux.
         type:Number,
         required:false
     },
-    pHLevel:{ // pH of 6 to 7.5 is optimal, range can be from 5 to 8.
+    phLevel:{ // pH of 6 to 7.5 is optimal, range can be from 5 to 8.
         type:Number,
         required:false //this might be generated randomly.
     },
-    CropHealth:{
+    cropHealth:{
         type:String,
         required:false //this might be generated randomly.
     },
-    IrrigationStatus:{
+    irrigationStatus:{
         type:String,
         required:false //this might be generated randomly.
     },
-    WeatherForcest:{
+    weatherForecast:{
         type:String,
         required:false //this might be generated randomly.
     }

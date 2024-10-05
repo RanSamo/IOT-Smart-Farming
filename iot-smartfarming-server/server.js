@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 app.use(projectRoutes)
 
 
-//connect to mongodb
+//TODO.connect to mongodb
 mongoose.connect(process.env.MONGO_URI)
    .then(() => {
       app.listen(port, () => {

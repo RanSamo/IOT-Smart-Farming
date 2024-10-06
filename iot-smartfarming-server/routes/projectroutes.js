@@ -8,11 +8,11 @@ const { getAllData,
 } = require('../controllers/projectController');
 const router = express.Router();
 
-// GET all data
+// GET all data - irrelevant for now.
 //router.get('/', getAllData);
 
 // GET last data
-router.get('/getLastData', getLastData); //TODO. This will be the ONLY get func cause we only need to GET the last data.
+router.get('/getLastData', getLastData); //This GET gets the last data recoreded in the DB.
 
 // GET one data
 router.get('/:id', getSingleData);

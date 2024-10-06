@@ -1,5 +1,7 @@
 const projdata = require('../models/datamodel');
 const mongoose = require('mongoose');
+const { getAllAverageData } = require('./healthTrendfunc');
+const { response } = require('express');
 
 // get all data
 const getAllData = async (req, res) => {
@@ -22,13 +24,20 @@ const getSingleData = async (req, res) => {
     res.status(200).json(singleData);
     
 }
-// TODO. Need to create a getter function to get the last data added to the DB.
+// A getter function to get the last data added to the DB.
 const getLastData = async (req, res) =>{
     
     try{
         const lastData = await projdata.findOne().sort({ createdAt: -1 });
         if (!lastData) return res.status(404).json({message: `No data found`});
-        res.status(200).json(lastData);
+        // Fetch the health trend data
+        const healthTrendData = await getAllAverageData();
+        
+        //combine the last data and the health trend data
+        const responseData = {
+            lastData, healthTrendData
+        };
+        res.status(200).json(responseData);
     }
     catch(error){
         res.status(404).json({ error: error.message });
@@ -36,18 +45,19 @@ const getLastData = async (req, res) =>{
 }
 
 // post new data
-const createData = async (req, res) => {  // TODO. Need to generate the data to simulate the sensors. 
+// TODO. maybe move this to another file and import it here, so the code will be cleaner.
+const createData = async (req, res) => {  // Generating the data to simulate the sensors. 
     // generate the data
     const generateTemperature = () =>(Math.random() * (30-20) + 20).toFixed(2); // 20 to 30 degrees Celsius.
     const generateHumidity = () =>(Math.random() * (70-50) + 50).toFixed(2); // 50% to 70%.
     const generateSoilMoisture = () => (Math.random() * (60-20) + 20).toFixed(2); // 20% to 60%.
     const generateLightIntensity = () => (Math.random() * 100).toFixed(2); // the range is between 0 to 100 lux.
     const generatepHLevel = () => (Math.random() * (8-5) + 5).toFixed(2); // pH of 6 to 7.5 is optimal, range can be from 5 to 8.
-    const generateCropHealth = () => { //TODO. this might be more complex, might be dependent on the other values.
+    const generateCropHealth = () => { // This might be more complex, might be dependent on the other values.
         const health = ['Good', 'Fair'];
         return health[Math.floor(Math.random() * health.length)];
     }
-    const generateIrrigationStatus = () => { //TODO. this value might be dependent to the time of the day.
+    const generateIrrigationStatus = () => { // This value might be dependent to the time of the day.
         const status = ['On', 'Off'];
         return status[Math.floor(Math.random() * status.length)];
     }

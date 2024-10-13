@@ -36,7 +36,7 @@ import {
 } from "recharts";
 import { styled } from "@mui/system";
 
-const OverallHealthChart = () => {
+const OverallHealthChart = ({healthData}) => {
   const data = [
     { date: "2024-09-15", health: 85, waterLevel: 70, temperature: 22 },
     { date: "2024-09-16", health: 82, waterLevel: 75, temperature: 23 },
@@ -55,7 +55,7 @@ const OverallHealthChart = () => {
         <Box sx={{ height: "400px", width: "100%" }}>
           <ResponsiveContainer>
             <LineChart
-              data={data}
+              data={healthData}
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />

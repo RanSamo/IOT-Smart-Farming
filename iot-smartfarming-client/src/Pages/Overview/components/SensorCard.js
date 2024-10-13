@@ -33,21 +33,21 @@ const getBackgroundColor = (value) => {
 const getIcon = (icon) => {
   switch (icon) {
     case "thermostat":
-      return <Thermostat style={{ fontSize: "2rem", color: "#555" }} />;
+      return <Thermostat style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "water_drop":
-      return <WaterDrop style={{ fontSize: "2rem", color: "#555" }} />;
+      return <WaterDrop style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "opacity":
-      return <Opacity style={{ fontSize: "2rem", color: "#555" }} />;
+      return <Opacity style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "wb_sunny":
-      return <WbSunny style={{ fontSize: "2rem", color: "#555" }} />;
+      return <WbSunny style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "science":
-      return <Science style={{ fontSize: "2rem", color: "#555" }} />;
+      return <Science style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "spa":
-      return <Spa style={{ fontSize: "2rem", color: "#555" }} />;
+      return <Spa style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "water_outlined":
-      return <WaterOutlined style={{ fontSize: "2rem", color: "#555" }} />;
+      return <WaterOutlined style={{ fontSize: "1.5rem", color: "#555" }} />;
     case "cloud":
-      return <Cloud style={{ fontSize: "2rem", color: "#555" }} />;
+      return <Cloud style={{ fontSize: "1.5rem", color: "#555" }} />;
     default:
       return null;
   }

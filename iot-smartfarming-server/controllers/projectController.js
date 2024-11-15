@@ -62,7 +62,7 @@ const createData = async (req, res) => {  // Generating the data to simulate the
         return status[Math.floor(Math.random() * status.length)];
     }
     const generateWeatherForecast = () => {
-        const forecast = ['Sunny', 'Rainy', 'Cloudy','stormy'];
+        const forecast = ['Sunny', 'Rainy', 'Cloudy','Stormy'];
         return forecast[Math.floor(Math.random() * forecast.length)];
     }
     const data = {

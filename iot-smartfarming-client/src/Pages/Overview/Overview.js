@@ -1,8 +1,5 @@
 import {React,useState, useEffect} from 'react';
-import { Grid, Card, CardContent, Typography, Box, List, ListItem, ListItemIcon, ListItemText, Divider, Tooltip, Paper,CircularProgress } from '@mui/material';
-import { Dashboard, Sensors, Thermostat, WaterDrop, Opacity, WbSunny, Science, Spa, WaterOutlined, Cloud } from '@mui/icons-material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { styled } from '@mui/system';
+import { Grid, Card, CardContent, Typography, Box,CircularProgress } from '@mui/material';
 import SensorCard from './components/SensorCard'
 import FarmMap from './components/FarmMap'
 import OverallHealthChart from './components/OverallHealthChart'
@@ -44,9 +41,9 @@ import OverallHealthChart from './components/OverallHealthChart'
           // Transform health trend data
           const transformedData = data.healthTrendData.map(item => ({
             date: item.date.split('T')[0], // Extract just the date part
-            health: item.healthScore,
-            waterLevel: item.avgSoilMoisture,
-            temperature: item.avgTemperature,
+            health: item.healthScore.toFixed(2),
+            waterLevel: item.avgSoilMoisture.toFixed(2),
+            temperature: item.avgTemperature.toFixed(2),
           }));
     
           // Update health trend data state

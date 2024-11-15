@@ -1,40 +1,10 @@
-import { React, useState } from "react";
+import { React} from "react";
 import {
-  Grid,
-  Card,
-  CardContent,
   Typography,
-  Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
   Tooltip,
-  Paper,
 } from "@mui/material";
-import {
-  Dashboard,
-  Sensors,
-  Thermostat,
-  WaterDrop,
-  Opacity,
-  WbSunny,
-  Science,
-  Spa,
-  WaterOutlined,
-  Cloud,
-} from "@mui/icons-material";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { styled } from "@mui/system";
+
+
 
 const FarmMap = () => {
   const sensors = [

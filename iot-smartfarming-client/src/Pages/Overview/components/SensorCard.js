@@ -19,13 +19,23 @@ import {
 
 // Function to get the background color and tooltip explanation based on value
 const getBackgroundColor = (value) => {
+  if(value == "Good" || value == "On" || value == "Sunny") {
+    return { color: "#90ee90", explanation: "Green: Ideal" };
+  }
+  if(value == "Rainy" || value == "Cloudy" || value == "Fair") {
+    return { color: "#ffcc80", explanation: "Orange: Pay attention" };
+  }
+  if(value == "Off" || value == "Stormy") {
+    return { color: "#ff6f61", explanation: "Red: Immediate action needed" };
+  }
+
   const numericValue = parseFloat(value);
   if (numericValue <= 30) {
-    return { color: "#90ee90", explanation: "Green: Low value (<= 30)" };
+    return { color: "#90ee90", explanation: "Green: Ideal" };
   } else if (numericValue > 30 && numericValue <= 70) {
-    return { color: "#ffcc80", explanation: "Orange: Medium value (31-70)" };
+    return { color: "#ffcc80", explanation: "Orange: Pay attention" };
   } else {
-    return { color: "#ff6f61", explanation: "Red: High value (> 70)" };
+    return { color: "#ff6f61", explanation: "Red: Immediate action needed" };
   }
 };
 

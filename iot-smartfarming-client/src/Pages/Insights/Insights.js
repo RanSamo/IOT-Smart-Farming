@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Typography, Box, Paper, IconButton } from "@mui/material";
-import { Thermostat, WaterDrop, Opacity, ArrowBack, Agriculture,Timeline } from "@mui/icons-material";
+import { Thermostat, ArrowBack, Agriculture,Timeline } from "@mui/icons-material";
 
 const cardData = [
   { icon: <Thermostat sx={{ fontSize: "2rem", color: "#60a5fa" }} />, text: "Get insights based on today's data" },
@@ -105,7 +105,7 @@ const Insights = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "100vh",
+          minHeight: "108.5vh",
           backgroundColor: "#eff2fa",
         }}
       >

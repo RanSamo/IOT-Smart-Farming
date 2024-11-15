@@ -1,30 +1,11 @@
-import { React, useState } from "react";
+import { React} from "react";
 import {
-  Grid,
   Card,
   CardContent,
   Typography,
   Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Tooltip,
-  Paper,
 } from "@mui/material";
-import {
-  Dashboard,
-  Sensors,
-  Thermostat,
-  WaterDrop,
-  Opacity,
-  WbSunny,
-  Science,
-  Spa,
-  WaterOutlined,
-  Cloud,
-} from "@mui/icons-material";
+
 import {
   LineChart,
   Line,
@@ -34,17 +15,8 @@ import {
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from "recharts";
-import { styled } from "@mui/system";
 
 const OverallHealthChart = ({healthData}) => {
-  const data = [
-    { date: "2024-09-15", health: 85, waterLevel: 70, temperature: 22 },
-    { date: "2024-09-16", health: 82, waterLevel: 75, temperature: 23 },
-    { date: "2024-09-17", health: 88, waterLevel: 80, temperature: 21 },
-    { date: "2024-09-18", health: 90, waterLevel: 85, temperature: 24 },
-    { date: "2024-09-19", health: 87, waterLevel: 90, temperature: 26 },
-    { date: "2024-09-20", health: 91, waterLevel: 95, temperature: 25 },
-  ];
 
   return (
     <Card sx={{ height: "484px" }}>

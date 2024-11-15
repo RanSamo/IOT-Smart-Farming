@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const Sidebar = () => (
 <Box 
   sx={{ 
-    height: '100vh', 
+    height: '105vh', 
     padding: 2, 
     backgroundColor: '#fff', 
     boxShadow: 2,
@@ -47,7 +47,7 @@ const Sidebar = () => (
   );
 
 const Layout = ({ children }) => (
-  <Grid container sx={{ height: '100vh', overflow: 'hidden',zIndex: 2 }}>
+  <Grid container sx={{ height: '100vh', overflow: 'visible',zIndex: 2 }}>
     {/* Sidebar */}
     <Grid item sm={1.5}>
       <Sidebar />

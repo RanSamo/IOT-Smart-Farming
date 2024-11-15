@@ -30,8 +30,8 @@ router.post('/api/insights', async (req, res) =>{
 
 // the Groq says this is the preffered way to do it, but I think the above works as well, need to check.
 //TODO. need to check which of the posts are better for this function, will see after Paz's part in the frontend.
-router.post('/api/insights', async (res, req) => {
-    await getinsights(res,req);
+router.post('/api/insights', async (req, res) => {
+    await getinsights(req,res);
 });
 
 // GET one data

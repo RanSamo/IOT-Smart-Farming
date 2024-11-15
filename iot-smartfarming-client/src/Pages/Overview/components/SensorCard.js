@@ -70,7 +70,6 @@ const SensorCard = ({ title, value, icon }) => {
             boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
           },
           minWidth: "200px",
-          margin: "10px",
         }}
       >
         <CardContent>

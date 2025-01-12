@@ -12,25 +12,67 @@ import {
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
+    userName: "",
     phoneNumber: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    Object.keys(formData).forEach((field) => {
+      if (!formData[field].trim()) {
+        newErrors[field] = "This field is required";
+      }
+    });
+
+    if (formData.phoneNumber && formData.phoneNumber.length != 10) {
+      newErrors.phoneNumber = "Phone Number must be 10 characters";
+    }
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    if (
+      formData.confirmPassword &&
+      formData.password !== formData.confirmPassword
+    ) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    return newErrors;
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [name]: value });
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    const newErrors = validateForm();
+
+    if (Object.keys(newErrors).length === 0) {
+      // Form is valid, handle submission
+      console.log("Form submitted:", formData);
+    } else {
+      // Form has errors
+      setErrors(newErrors);
+    }
   };
 
   return (
@@ -61,103 +103,86 @@ const SignUp = () => {
                 Create your account by filling in the information below.
               </Typography>
 
-              <Box
-                component="form"
-                onSubmit={handleSubmit}
-                noValidate
-                action="#"
-              >
+              <Box component="form" onSubmit={handleSubmit} noValidate>
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  id="name"
                   label="Full Name"
-                  name="name"
-                  autoComplete="name"
-                  autoFocus
-                  value={formData.name}
+                  name="fullName"
+                  value={formData.fullName}
                   onChange={handleChange}
-                  sx={{
-                    mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
-                  }}
+                  error={Boolean(errors.fullName)}
+                  helperText={errors.fullName}
+                  sx={{ mb: 2 }}
                 />
 
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  id="phoneNumber"
+                  label="Username"
+                  name="userName"
+                  value={formData.userName}
+                  onChange={handleChange}
+                  error={Boolean(errors.userName)}
+                  helperText={errors.userName}
+                  sx={{ mb: 2 }}
+                />
+
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
                   label="Phone Number"
                   name="phoneNumber"
-                  autoComplete="tel"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  sx={{
-                    mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
-                  }}
+                  error={Boolean(errors.phoneNumber)}
+                  helperText={errors.phoneNumber}
+                  sx={{ mb: 2 }}
                 />
 
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  id="email"
                   label="Email Address"
                   name="email"
-                  autoComplete="email"
+                  type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  sx={{
-                    mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
-                  }}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
+                  sx={{ mb: 2 }}
                 />
 
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  name="password"
                   label="Password"
+                  name="password"
                   type="password"
-                  id="password"
-                  autoComplete="new-password"
                   value={formData.password}
                   onChange={handleChange}
-                  sx={{
-                    mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
-                  }}
+                  error={Boolean(errors.password)}
+                  helperText={errors.password}
+                  sx={{ mb: 2 }}
                 />
 
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  name="confirmPassword"
                   label="Confirm Password"
+                  name="confirmPassword"
                   type="password"
-                  id="confirmPassword"
-                  autoComplete="new-password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  sx={{
-                    mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
-                  }}
+                  error={Boolean(errors.confirmPassword)}
+                  helperText={errors.confirmPassword}
+                  sx={{ mb: 2 }}
                 />
 
                 <Button
@@ -168,9 +193,7 @@ const SignUp = () => {
                     mb: 3,
                     py: 1.5,
                     backgroundColor: "primary.main",
-                    "&:hover": {
-                      backgroundColor: "primary.dark",
-                    },
+                    "&:hover": { backgroundColor: "primary.dark" },
                   }}
                 >
                   <Typography fontWeight={600}>Create Account</Typography>
@@ -183,7 +206,7 @@ const SignUp = () => {
                     color="text.secondary"
                   >
                     Already have an account?{" "}
-                    <Link href="#" color="primary">
+                    <Link href="/login" color="primary">
                       Sign in here
                     </Link>
                   </Typography>

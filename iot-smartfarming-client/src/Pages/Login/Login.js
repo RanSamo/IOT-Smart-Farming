@@ -15,11 +15,37 @@ import {
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    return newErrors;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission
-    console.log({ email: email, password: password });
+    const newErrors = validateForm();
+
+    if (Object.keys(newErrors).length === 0) {
+      // Form is valid, handle submission
+      console.log("Form submitted:", { email, password });
+    } else {
+      // Form has errors
+      setErrors(newErrors);
+    }
   };
 
   return (
@@ -58,7 +84,6 @@ const Login = () => {
               >
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   id="email"
                   label="Email address"
@@ -66,18 +91,19 @@ const Login = () => {
                   autoComplete="email"
                   autoFocus
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors((prev) => ({ ...prev, email: "" }));
+                  }}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
                   sx={{
                     mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
                   }}
                 />
 
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="password"
                   label="Password"
@@ -85,12 +111,14 @@ const Login = () => {
                   id="password"
                   autoComplete="current-password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors((prev) => ({ ...prev, password: "" }));
+                  }}
+                  error={Boolean(errors.password)}
+                  helperText={errors.password}
                   sx={{
                     mb: 2,
-                    "& .MuiFormLabel-asterisk": {
-                      display: "none",
-                    },
                   }}
                 />
 
@@ -130,7 +158,7 @@ const Login = () => {
                     color="text.secondary"
                   >
                     Don't have an account, yet?{" "}
-                    <Link href="#" color="primary">
+                    <Link href="/sign-up" color="primary">
                       Sign up here
                     </Link>
                   </Typography>

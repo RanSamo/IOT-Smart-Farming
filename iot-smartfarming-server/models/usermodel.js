@@ -41,6 +41,11 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// Method to verify the password
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
 // Create the User model
 const User = mongoose.model('User', userSchema);
 

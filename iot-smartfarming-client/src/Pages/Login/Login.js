@@ -11,11 +11,13 @@ import {
   Paper,
   Grid,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   async function login(user) {
     try {
@@ -68,10 +70,13 @@ const Login = () => {
     const newErrors = validateForm();
 
     if (Object.keys(newErrors).length === 0) {
+      if (email == "agro@dashboard.com" && password == "12345678") {
+        navigate("/");
+      }
       // Form is valid, handle submission
       console.log("Form submitted:", { email, password });
       let loginUser = {
-        userName: email,
+        email: email,
         password: password,
       };
       login(loginUser)
@@ -205,7 +210,7 @@ const Login = () => {
               </Box>
 
               <Alert severity="info" sx={{ mt: 3 }}>
-                Use demo@example.com and password agrodashboard
+                Use agro@dashboard.com and password 12345678
               </Alert>
             </Paper>
           </Grid>

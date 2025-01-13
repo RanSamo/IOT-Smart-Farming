@@ -10,6 +10,31 @@ import {
   Grid,
 } from "@mui/material";
 
+async function createNewUser(newUser) {
+  try {
+    const response = await fetch("/api/users/newUser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error creating user:", errorData.error);
+      return { success: false, error: errorData.error };
+    }
+
+    const data = await response.json();
+    console.log("User and farm created successfully:", data);
+    return { success: true, data };
+  } catch (err) {
+    console.error("An error occurred:", err.message);
+    return { success: false, error: err.message };
+  }
+}
+
 const SignUp = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -69,6 +94,23 @@ const SignUp = () => {
     if (Object.keys(newErrors).length === 0) {
       // Form is valid, handle submission
       console.log("Form submitted:", formData);
+      let newUser = {
+        fullName: formData.fullName,
+        userName: formData.userName,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        password: formData.password,
+        name: "Default Farm Name",
+        location: "Unknown",
+      };
+      createNewUser(newUser).then((result) => {
+        if (result.success) {
+          console.log("User and farm created:", result.data);
+        } else {
+          console.error("Failed to create user:", result.error);
+        }
+      });
+      console.log(newUser);
     } else {
       // Form has errors
       setErrors(newErrors);

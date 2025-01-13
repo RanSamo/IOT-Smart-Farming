@@ -1,13 +1,13 @@
+const mongoose = require('mongoose');
+
 const farmSchema = new mongoose.Schema({
     name: {
       type: String,
       required: true,
     },
-    location: {
-      type: {
-        type: String,
-        required: true,
-      },
+    location: { 
+      type: String,
+      required: true,
     },
     monitoringData: [
         {

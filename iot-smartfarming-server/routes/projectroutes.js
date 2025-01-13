@@ -15,6 +15,7 @@ const router = express.Router();
 // GET last data
 router.get('/getLastData', getLastData); //This GET gets the last data recoreded in the DB.
 
+
 /*
 // POST for data to groq API
 router.post('/api/insights', async (req, res) =>{

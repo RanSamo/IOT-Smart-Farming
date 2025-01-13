@@ -1,29 +1,32 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const User = require('../models/usermodel');
-const Farm = require('../models/farmmodel'); 
+const express = require("express");
+const bcrypt = require("bcrypt");
+const User = require("../models/usermodel");
+const Farm = require("../models/farmmodel");
 const router = express.Router();
 
-router.post('/newUser', async (req, res) => {
+router.post("/newUser", async (req, res) => {
   console.log("Creating a new user with data:", req.body);
   try {
-    const { userName, password, fullName, email, phoneNumber , name , location} = req.body;
+    const { userName, password, fullName, email, phoneNumber, name, location } =
+      req.body;
 
     if (!userName || !password || !fullName || !email || !phoneNumber) {
-      return res.status(400).json({ error: 'All fields are required' });
+      return res.status(400).json({ error: "All fields are required" });
     }
 
     const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
     if (existingUser) {
-      console.error('User with this username or email already exists');
-      return res.status(400).json({ error: 'User with this username or email already exists' });
+      console.error("User with this username or email already exists");
+      return res
+        .status(400)
+        .json({ error: "User with this username or email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newFarm = new Farm({
-      name ,
-      location ,
+      name,
+      location,
       monitoringData: [],
     });
     await newFarm.save();
@@ -40,10 +43,16 @@ router.post('/newUser', async (req, res) => {
     console.log("New user data before saving:", newUser);
     await newUser.save();
 
-    res.status(201).json({ message: 'User and farm created successfully', user: newUser, farm: newFarm });
+    res.status(201).json({
+      message: "User and farm created successfully",
+      user: newUser,
+      farm: newFarm,
+    });
   } catch (err) {
-    console.error('Error creating user or farm:', err);
-    res.status(500).json({ error: `Error creating user or farm: ${err.message}` });
+    console.error("Error creating user or farm:", err);
+    res
+      .status(500)
+      .json({ error: `Error creating user or farm: ${err.message}` });
   }
 });
 

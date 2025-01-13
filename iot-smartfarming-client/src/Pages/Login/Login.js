@@ -17,14 +17,42 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
 
+  async function login(user) {
+    try {
+      const response = await fetch("/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      // Check if the response is okay
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to login.");
+      }
+
+      const data = await response.json();
+      console.log("Login successful:", data);
+      // Save the token (e.g., in localStorage or a cookie)
+      localStorage.setItem("token", data.token);
+
+      return data; // Return token or other relevant data
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      throw error; // Rethrow for further handling
+    }
+  }
+
   const validateForm = () => {
     const newErrors = {};
 
-    if (!email.trim()) {
+    /*if (!email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = "Please enter a valid email";
-    }
+    }*/
 
     if (!password.trim()) {
       newErrors.password = "Password is required";
@@ -42,6 +70,17 @@ const Login = () => {
     if (Object.keys(newErrors).length === 0) {
       // Form is valid, handle submission
       console.log("Form submitted:", { email, password });
+      let loginUser = {
+        userName: email,
+        password: password,
+      };
+      login(loginUser)
+        .then((data) => {
+          console.log("User logged in successfully:", data);
+        })
+        .catch((error) => {
+          console.error("Login failed:", error.message);
+        });
     } else {
       // Form has errors
       setErrors(newErrors);

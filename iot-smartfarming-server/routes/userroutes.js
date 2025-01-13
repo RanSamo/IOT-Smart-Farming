@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/newUser', async (req, res) => {
   console.log("Creating a new user with data:", req.body);
   try {
-    const { userName, password, fullName, email, phoneNumber } = req.body;
+    const { userName, password, fullName, email, phoneNumber , name , location} = req.body;
 
     if (!userName || !password || !fullName || !email || !phoneNumber) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -22,8 +22,8 @@ router.post('/newUser', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newFarm = new Farm({
-      name: `${fullName}'s Farm`,
-      location: 'Unknown',
+      name ,
+      location ,
       monitoringData: [],
     });
     await newFarm.save();

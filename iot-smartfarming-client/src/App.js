@@ -7,6 +7,7 @@ import Login from "./Pages/Login/Login";
 import SignUp from "./Pages/SignUp/SignUp";
 import { ThemeProvider } from "@mui/material";
 import mainTheme from "./Themes/mainTheme";
+import ProtectedRoute from "./reusable/ProtectedRoute";
 
 const App = () => {
   return (
@@ -14,8 +15,22 @@ const App = () => {
       <Router>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<Overview />} />
-            <Route path="/insights" element={<Insights />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Overview />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/insights"
+              element={
+                <ProtectedRoute>
+                  <Insights />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />

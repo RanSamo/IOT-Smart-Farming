@@ -23,7 +23,7 @@ router.post("/newUser", async (req, res) => {
         .json({ error: "User with this username or email already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+   // const hashedPassword = await bcrypt.hash(password, 10);
 
     const newFarm = new Farm({
       name,
@@ -35,7 +35,7 @@ router.post("/newUser", async (req, res) => {
 
     const newUser = new User({
       userName,
-      password: hashedPassword,
+      password,// hashedPassword
       fullName,
       email,
       phoneNumber,
@@ -57,6 +57,7 @@ router.post("/newUser", async (req, res) => {
   }
 });
 
+// Authenticate middleware
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -76,26 +77,48 @@ const authenticate = (req, res, next) => {
   }
 };
 
+/*
 // Login endpoint
 router.post("/login", async (req, res) => {
-  const { userName, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!userName || !password) {
+  if (!email || !password) {
     return res
       .status(400)
-      .json({ message: "Username and password are required." });
+      .json({ message: "email and password are required." });
   }
 
   try {
-    const user = await User.findOne({ userName });
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid username or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    //const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid username or password." });
-    }
+      return res.status(400).json({ message: "Invalid password." });
+    }*/
+
+      router.post("/login", async (req, res) => {
+        const { email, password } = req.body;
+      
+        if (!email || !password) {
+          return res
+            .status(400)
+            .json({ message: "email and password are required." });
+        }
+      
+        try {
+          const user = await User.findOne({ email });
+          if (!user) {
+            return res.status(400).json({ message: "Invalid email or password." });
+          }
+      
+          
+          if (password !== user.password) {
+            return res.status(400).json({ message: "Invalid password." });
+          }
+      
 
     // Create JWT
     const token = jwt.sign(

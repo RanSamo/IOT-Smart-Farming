@@ -14,8 +14,16 @@ const farmSchema = new mongoose.Schema({
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Project', 
         },
-    ],    
-  });
+    ],
+    cropTypes: [{
+      type: String,
+      required: true,
+  }],
+    alerts: [{
+      message: String,
+      timestamp: Date,
+  }],
+  },{timestamps: true});
 
   const Farm = mongoose.model('Farm', farmSchema);
   

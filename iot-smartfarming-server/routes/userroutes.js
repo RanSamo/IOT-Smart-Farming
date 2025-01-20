@@ -23,7 +23,7 @@ router.post("/newUser", async (req, res) => {
         .json({ error: "User with this username or email already exists" });
     }
 
-   // const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newFarm = new Farm({
       name,
@@ -36,7 +36,7 @@ router.post("/newUser", async (req, res) => {
 
     const newUser = new User({
       userName,
-      password,// hashedPassword
+      password: hashedPassword,
       fullName,
       email,
       phoneNumber,
@@ -106,34 +106,46 @@ router.post("/login", async (req, res) => {
         if (!email || !password) {
           return res
             .status(400)
-            .json({ message: "email and password are required." });
+            .json({ message: "Email and password are required." });
         }
       
         try {
+          // חיפוש המשתמש לפי אימייל
           const user = await User.findOne({ email });
           if (!user) {
             return res.status(400).json({ message: "Invalid email or password." });
           }
       
-          
-          if (password !== user.password) {
+          // השוואת סיסמאות
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
             return res.status(400).json({ message: "Invalid password." });
           }
       
-
-    // Create JWT
-    const token = jwt.sign(
-      { userId: user._id, role: user.role }, // Include user ID and optional role
-      process.env.JWT_SECRET,
-      { expiresIn: "3h" }
-    );
-
-    res.json({ token, message: "Login successful." });
-  } catch (err) {
-    console.error("Error during login:", err);
-    res.status(500).json({ message: "Server error." });
-  }
-});
+          // יצירת JWT
+          const token = jwt.sign(
+            { userId: user._id, role: user.role }, // ניתן להוסיף מידע נוסף אם צריך
+            process.env.JWT_SECRET,
+            { expiresIn: "3h" }
+          );
+      
+          // החזרת תגובה ללקוח
+          res.status(200).json({
+            message: "Login successful.",
+            token,
+            user: {
+              email: user.email,
+              fullName: user.fullName,
+              phoneNumber: user.phoneNumber,
+              userName: user.userName,
+            },
+          });
+        } catch (err) {
+          console.error("Error during login:", err);
+          res.status(500).json({ message: "Server error." });
+        }
+      });
+      
 
 // Example: Protected route
 router.get("/protected", authenticate, (req, res) => {

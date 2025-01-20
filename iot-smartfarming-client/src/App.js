@@ -1,8 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./Layout"; // Adjust the path if needed
-import Overview from "./Pages/Overview/Overview"; // Adjust the path if needed
-import Insights from "./Pages/Insights/Insights"; // Ensure you have an Insights component
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Layout from "./Layout";
+import Overview from "./Pages/Overview/Overview";
+import Insights from "./Pages/Insights/Insights";
 import Login from "./Pages/Login/Login";
 import SignUp from "./Pages/SignUp/SignUp";
 import { ThemeProvider } from "@mui/material";
@@ -14,9 +19,17 @@ const App = () => {
     <ThemeProvider theme={mainTheme}>
       <Router>
         <Routes>
+          {/* Redirect root path to login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* Auth routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/sign-up" element={<SignUp />} />
+
+          {/* Protected routes under Layout */}
           <Route element={<Layout />}>
             <Route
-              path="/"
+              path="/overview"
               element={
                 <ProtectedRoute>
                   <Overview />
@@ -32,11 +45,10 @@ const App = () => {
               }
             />
           </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </Router>
     </ThemeProvider>
   );
 };
+
 export default App;

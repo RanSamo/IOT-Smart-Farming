@@ -78,28 +78,6 @@ const authenticate = (req, res, next) => {
   }
 };
 
-/*
-// Login endpoint
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: "email and password are required." });
-  }
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid email or password." });
-    }
-
-    //const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password." });
-    }*/
-
       router.post("/login", async (req, res) => {
         const { email, password } = req.body;
       
@@ -110,26 +88,22 @@ router.post("/login", async (req, res) => {
         }
       
         try {
-          // חיפוש המשתמש לפי אימייל
           const user = await User.findOne({ email });
           if (!user) {
             return res.status(400).json({ message: "Invalid email or password." });
           }
       
-          // השוואת סיסמאות
           const isMatch = await bcrypt.compare(password, user.password);
           if (!isMatch) {
             return res.status(400).json({ message: "Invalid password." });
           }
       
-          // יצירת JWT
           const token = jwt.sign(
-            { userId: user._id, role: user.role }, // ניתן להוסיף מידע נוסף אם צריך
+            { userId: user._id, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: "3h" }
           );
       
-          // החזרת תגובה ללקוח
           res.status(200).json({
             message: "Login successful.",
             token,

@@ -8,10 +8,10 @@ const router = express.Router();
 router.post("/newUser", async (req, res) => {
   console.log("Creating a new user with data:", req.body);
   try {
-    const { userName, password, fullName, email, phoneNumber, name, location, cropTypes } =
+    const { userName, password, fullName, email, phoneNumber, name, location, cropType } =
       req.body;
 
-    if (!userName || !password || !fullName || !email || !phoneNumber || !cropTypes) {
+    if (!userName || !password || !fullName || !email || !phoneNumber || !cropType) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -29,7 +29,7 @@ router.post("/newUser", async (req, res) => {
       name,
       location,
       monitoringData: [],
-      cropTypes,
+      cropType,
     });
     await newFarm.save();
     console.log("New farm created:", newFarm);

@@ -15,10 +15,10 @@ const farmSchema = new mongoose.Schema({
           ref: 'Project', 
         },
     ],
-    cropTypes: [{
+    cropType: {
       type: String,
       required: true,
-  }],
+  },
     alerts: [{
       message: String,
       timestamp: Date,

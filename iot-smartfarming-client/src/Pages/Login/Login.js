@@ -10,14 +10,22 @@ import {
   Alert,
   Paper,
   Grid,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   async function login(user) {
     try {
@@ -70,9 +78,6 @@ const Login = () => {
     const newErrors = validateForm();
 
     if (Object.keys(newErrors).length === 0) {
-      if (email == "agro@dashboard.com" && password == "12345678") {
-        navigate("/");
-      }
       // Form is valid, handle submission
       console.log("Form submitted:", { email, password });
       let loginUser = {
@@ -82,6 +87,9 @@ const Login = () => {
       login(loginUser)
         .then((data) => {
           console.log("User logged in successfully:", data);
+          localStorage.setItem("token", data.token);
+          console.log("Token after login:", localStorage.getItem("token"));
+          navigate("/overview");
         })
         .catch((error) => {
           console.error("Login failed:", error.message);
@@ -151,7 +159,7 @@ const Login = () => {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   autoComplete="current-password"
                   value={password}
@@ -161,6 +169,20 @@ const Login = () => {
                   }}
                   error={Boolean(errors.password)}
                   helperText={errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                   sx={{
                     mb: 2,
                   }}

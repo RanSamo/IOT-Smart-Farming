@@ -67,17 +67,17 @@ const SignUp = () => {
     const newErrors = {};
 
     const requiredFields = [
-      'fullName', 
-      'userName', 
-      'phoneNumber', 
-      'email', 
-      'password', 
-      'confirmPassword',
-      'farmName',
-      'farmLocation',
-      'cropName'
+      "fullName",
+      "userName",
+      "phoneNumber",
+      "email",
+      "password",
+      "confirmPassword",
+      "farmName",
+      "farmLocation",
+      "cropName",
     ];
-    
+
     requiredFields.forEach((field) => {
       if (!formData[field] || !formData[field].toString().trim()) {
         newErrors[field] = "This field is required";
@@ -128,7 +128,7 @@ const SignUp = () => {
         password: formData.password,
         name: formData.farmName,
         location: formData.farmLocation,
-        cropName: formData.cropName
+        cropName: formData.cropName,
       };
 
       try {
@@ -159,14 +159,14 @@ const SignUp = () => {
         justifyContent: "center",
       }}
     >
-      <Paper 
-        elevation={1} 
-        sx={{ 
-          p: 4, 
-          borderRadius: 5, 
-          width: '100%', 
+      <Paper
+        elevation={1}
+        sx={{
+          p: 4,
+          borderRadius: 5,
+          width: "100%",
           maxWidth: 1200,
-          mx: 2
+          mx: 2,
         }}
       >
         <Typography variant="h4" fontWeight={600} component="h1" sx={{ mb: 1 }}>
@@ -276,7 +276,11 @@ const SignUp = () => {
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
                       >
-                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -290,7 +294,7 @@ const SignUp = () => {
               <Typography variant="h5" fontWeight="bold" sx={{ mb: 2, mt: 2 }}>
                 Farm Information
               </Typography>
-              
+
               <TextField
                 margin="normal"
                 fullWidth
@@ -359,7 +363,15 @@ const SignUp = () => {
             </Typography>
           </Box>
 
-          <Alert severity="info" sx={{ mt: 3 }}>
+          <Alert
+            severity="info"
+            sx={{
+              mt: 3,
+              display: "flex",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
             All fields are required for registration
           </Alert>
         </Box>

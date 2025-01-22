@@ -34,7 +34,7 @@ const Sidebar = () => (
       <ListItem
         button
         component={Link}
-        to="/"
+        to="/overview"
         sx={{
           "&:hover": { backgroundColor: "#f0f0f0" },
           textDecoration: "none", // Ensure no underline on links

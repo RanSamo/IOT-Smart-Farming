@@ -12,6 +12,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 async function createNewUser(newUser) {
   try {
@@ -54,6 +55,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
@@ -128,13 +130,14 @@ const SignUp = () => {
         password: formData.password,
         name: formData.farmName,
         location: formData.farmLocation,
-        cropName: formData.cropName,
+        cropType: formData.cropName,
       };
 
       try {
         const result = await createNewUser(newUser);
         if (result.success) {
           console.log("User and farm created:", result.data);
+          navigate("/login");
         } else {
           console.error("Failed to create user:", result.error);
           setErrors({ submit: result.error });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(null);
@@ -57,7 +57,6 @@ const ProtectedRoute = ({ children }) => {
       />
     );
   }
-
   return isAuthorized ? children : <Navigate to="/login" />;
 };
 

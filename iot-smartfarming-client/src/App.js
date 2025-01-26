@@ -46,7 +46,7 @@ const App = () => {
               }
             />
              <Route
-              path="/weatherDashboard"
+              path="/weatherDashboard/:farmId"
               element={
                 <ProtectedRoute>
                   <WeatherDashboard />

@@ -17,14 +17,17 @@
     "@fontsource/roboto": "^5.1.1",
     "@mui/icons-material": "^6.3.1",
     "@mui/material": "^6.3.1",
+    "@shadcn/ui": "^0.0.4",
     "bcrypt": "^5.1.1",
     "groq-sdk": "^0.7.0",
     "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.474.0",
     "mongoose": "^8.9.4",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.1",
     "react-scripts": "^5.0.1",
     "recharts": "^2.15.0",
-    "set-blocking": "^2.0.0"
+    "set-blocking": "^2.0.0",
+    "shadcn-ui": "^0.9.4"
   }
 }

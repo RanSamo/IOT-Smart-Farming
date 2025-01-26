@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Layout from "./Layout";
+import WeatherDashboard from "./Pages/WeatherDashboard/WeatherDashboard"; 
 import Overview from "./Pages/Overview/Overview";
 import Insights from "./Pages/Insights/Insights";
 import Login from "./Pages/Login/Login";
@@ -41,6 +42,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <Insights />
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/weatherDashboard"
+              element={
+                <ProtectedRoute>
+                  <WeatherDashboard />
                 </ProtectedRoute>
               }
             />

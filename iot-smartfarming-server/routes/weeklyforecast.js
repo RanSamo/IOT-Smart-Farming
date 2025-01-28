@@ -1,87 +1,10 @@
-// const express = require('express');
-// const axios = require('axios');
-// const Farm = require('../models/farmmodel');
-
-// const router = express.Router();
-
-// const API_KEY = process.env.API_KEY;
-// const BASE_URL = 'https://api.openweathermap.org/data/2.5';
-
-// פונקציה לשליפת קואורדינטות
-// const fetchCoordinates = async (city) => {
-//   const url = `${BASE_URL}/weather?q=${city}&appid=${API_KEY}&units=metric`;
-//   const response = await axios.get(url);
-//   const { coord } = response.data;
-//   return { lat: coord.lat, lon: coord.lon };
-// };
-
-// פונקציה לשליפת תחזית שבועית
-// const fetchWeeklyForecast = async (lat, lon) => {
-//   const url = `${BASE_URL}/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${API_KEY}&units=metric`;
-//   const response = await axios.get(url);
-//   return response.data.daily;
-// };
-
-// פונקציה לעיבוד התחזית השבועית לפורמט המבוקש
-// const processWeeklyForecast = (data) => {
-//   return data.map((day) => ({
-//     date: new Date(day.dt * 1000).toLocaleDateString('en-US', {
-//       weekday: 'short',
-//     }), // יום בשבוע
-//     tempMax: Math.round(day.temp.max), // טמפרטורה מקסימלית
-//     tempMin: Math.round(day.temp.min), // טמפרטורה מינימלית
-//     description: day.weather[0].description, // תיאור מזג האוויר
-//     icon: `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`, // אייקון
-//   }));
-// };
-
-// ראוטר לתחזית שבועית
-// router.get('/weeklyforecast/:farmId', async (req, res) => {
-//   const { farmId } = req.params;
-
-//   try {
-//     שליפת פרטי החווה ממסד הנתונים
-//     const farm = await Farm.findById(farmId);
-//     if (!farm) {
-//       return res.status(404).json({ error: 'Farm not found' });
-//     }
-
-//     if (!farm.location) {
-//       return res.status(400).json({ error: 'Farm location is not defined' });
-//     }
-
-//     const city = farm.location.trim();
-
-//     שליפת קואורדינטות על בסיס שם העיר
-//     const { lat, lon } = await fetchCoordinates(city);
-
-//     שליפת תחזית שבועית
-//     const weeklyData = await fetchWeeklyForecast(lat, lon);
-
-//     עיבוד התחזית לפורמט המבוקש
-//     const processedData = processWeeklyForecast(weeklyData);
-
-//     שליחת התחזית ללקוח
-//     res.json(processedData);
-//   } catch (error) {
-//     console.error('Error fetching weekly forecast:', error.message);
-//     res.status(500).json({ error: 'Failed to fetch weekly forecast' });
-//   }
-// });
-
-// module.exports = router;
-
-
 const express = require('express');
 const axios = require('axios');
 const Farm = require('../models/farmmodel');
 
-const router = express.Router();
-
 const API_KEY = process.env.API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
-// פונקציה לשליפת קואורדינטות
 const fetchCoordinates = async (city) => {
   const url = `${BASE_URL}/weather?q=${city}&appid=${API_KEY}&units=metric`;
   const response = await axios.get(url);
@@ -89,20 +12,17 @@ const fetchCoordinates = async (city) => {
   return { lat: coord.lat, lon: coord.lon };
 };
 
-// פונקציה לשליפת תחזית שבועית
 const fetchWeeklyForecast = async (lat, lon) => {
   const url = `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
   const response = await axios.get(url);
   return response.data.list;
 };
 
-// פונקציה לעיבוד התחזית לפורמט מבוקש
 const processWeeklyForecast = (data) => {
   const dailyData = {};
 
-  // סידור נתונים לפי יום
   data.forEach((item) => {
-    const date = item.dt_txt.split(' ')[0]; // קבלת תאריך בלבד
+    const date = item.dt_txt.split(' ')[0]; 
     if (!dailyData[date]) {
       dailyData[date] = {
         tempMax: item.main.temp_max,
@@ -116,45 +36,144 @@ const processWeeklyForecast = (data) => {
     }
   });
 
-  // עיבוד הנתונים למערך
   return Object.keys(dailyData).map((date) => ({
     date,
     ...dailyData[date],
   }));
 };
 
-// ראוטר לתחזית שבועית
-router.get('/weeklyforecast/:farmId', async (req, res) => {
-    const farmId = req.params.farmId.trim();
+const getWeeklyForecastMiddleware = async (req, res) => {
+  try {
+    const { farmId } = req.params;
+
+    if (!farmId) {
+      return res.status(400).json({ error: 'Farm ID is required' });
+    }
+
+    const forecast = await getWeeklyForecast(farmId);
+    res.status(200).json(forecast);
+  } catch (error) {
+    console.error('Error in getWeeklyForecastMiddleware:', error.message);
+    res.status(500).json({ error: error.message || 'Failed to fetch weekly forecast' });
+  }
+};
+
+
+const getWeeklyForecast = async (farmId) => {
+  if (!farmId) {
+    throw new Error('Farm ID is required');
+  }
 
   try {
-    // שליפת פרטי החווה ממסד הנתונים
     const farm = await Farm.findById(farmId);
     if (!farm) {
-      return res.status(404).json({ error: 'Farm not found' });
+      throw new Error('Farm not found');
     }
 
     if (!farm.location) {
-      return res.status(400).json({ error: 'Farm location is not defined' });
+      throw new Error('Farm location is not defined');
     }
 
     const city = farm.location.trim();
 
-    // שליפת קואורדינטות על בסיס שם העיר
     const { lat, lon } = await fetchCoordinates(city);
 
-    // שליפת תחזית שבועית
     const weeklyData = await fetchWeeklyForecast(lat, lon);
 
-    // עיבוד התחזית לפורמט המבוקש
-    const processedData = processWeeklyForecast(weeklyData);
+    if (!weeklyData || !Array.isArray(weeklyData)) {
+      console.error("Invalid weekly forecast data format:", weeklyData);
+      throw new Error("Invalid weekly forecast format");
+    }
 
-    // שליחת התחזית ללקוח
-    res.json(processedData);
+    return processWeeklyForecast(weeklyData);
   } catch (error) {
     console.error('Error fetching weekly forecast:', error.message);
-    res.status(500).json({ error: 'Failed to fetch weekly forecast' });
+    throw new Error('Failed to fetch weekly forecast'); 
   }
-});
+};
 
-module.exports = router;
+module.exports = {getWeeklyForecast, getWeeklyForecastMiddleware};
+
+
+
+
+
+// const getWeeklyForecast = async(farmId) =>
+// {
+//   if (!farmId) {
+//     throw new Error('Farm ID is required');
+//   }
+  
+//   try {
+//     // שליפת פרטי החווה ממסד הנתונים
+//     const farm = await Farm.findById(farmId);
+//     if (!farm) {
+//       return res.status(404).json({ error: 'Farm not found' });
+//     }
+
+//     if (!farm.location) {
+//       return res.status(400).json({ error: 'Farm location is not defined' });
+//     }
+
+//     const city = farm.location.trim();
+
+//     // שליפת קואורדינטות על בסיס שם העיר
+//     const { lat, lon } = await fetchCoordinates(city);
+
+//     // שליפת תחזית שבועית
+//     const weeklyData = await fetchWeeklyForecast(lat, lon);
+
+//     // עיבוד התחזית לפורמט המבוקש
+//     const processedData = processWeeklyForecast(weeklyData);
+
+//     // שליחת התחזית ללקוח
+//     res.status(200).json(processedData);
+//   } catch (error) {
+//     console.error('Error fetching weekly forecast:', error.message);
+//     res.status(500).json({ error: 'Failed to fetch weekly forecast' });
+//   }
+// }
+
+
+// // ראוטר לתחזית שבועית
+// router.get('/weeklyforecast/:farmId', async (req, res) => {
+//     const farmId = req.params.farmId.trim();
+
+//   try {
+//     // שליפת פרטי החווה ממסד הנתונים
+//     const farm = await Farm.findById(farmId);
+//     if (!farm) {
+//       return res.status(404).json({ error: 'Farm not found' });
+//     }
+
+//     if (!farm.location) {
+//       return res.status(400).json({ error: 'Farm location is not defined' });
+//     }
+
+//     const city = farm.location.trim();
+
+//     // שליפת קואורדינטות על בסיס שם העיר
+//     const { lat, lon } = await fetchCoordinates(city);
+
+//     // שליפת תחזית שבועית
+//     const weeklyData = await fetchWeeklyForecast(lat, lon);
+
+//     // עיבוד התחזית לפורמט המבוקש
+//     const processedData = processWeeklyForecast(weeklyData);
+
+//     // שליחת התחזית ללקוח
+//     res.json(processedData);
+//   } catch (error) {
+//     console.error('Error fetching weekly forecast:', error.message);
+//     res.status(500).json({ error: 'Failed to fetch weekly forecast' });
+//   }
+// });
+
+// router.post('/insights', async (req, res) => {
+//   try {
+//     await getWeatherInsights(req, res); // הפעלת הפונקציה
+//   } catch (error) {
+//     console.error('Error in getWeatherInsights:', error.message);
+//     res.status(500).json({ error: 'Failed to get weather insights' });
+//   }
+// });

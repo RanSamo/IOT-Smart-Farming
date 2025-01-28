@@ -7,6 +7,9 @@ const { getAllData,
     updateData
 } = require('../controllers/projectController');
 const { getinsights } = require('../insightsAPI');
+const {getCurrentWeather} = require('../routes/dailyforecast');
+const { getWeeklyForecastMiddleware } = require('../routes/weeklyforecast'); 
+const {getWeatherInsights} = require('../weatherInsightsRouter');
 const router = express.Router();
 
 // GET all data - irrelevant for now.
@@ -14,6 +17,12 @@ const router = express.Router();
 
 // GET last data
 router.get('/getLastData', getLastData); //This GET gets the last data recoreded in the DB.
+
+// GET dailyforecast
+router.get('/current-weather/:farmId', getCurrentWeather);
+
+// GET weeklyforecast
+router.get('/weeklyforecast/:farmId', getWeeklyForecastMiddleware);
 
 
 /*
@@ -33,6 +42,10 @@ router.post('/api/insights', async (req, res) =>{
 //TODO. need to check which of the posts are better for this function, will see after Paz's part in the frontend.
 router.post('/api/insights', async (req, res) => {
     await getinsights(req,res);
+});
+
+router.post('/api/weatherinsights/:farmId', async (req, res) => {
+    await getWeatherInsights(req,res);
 });
 
 // GET one data

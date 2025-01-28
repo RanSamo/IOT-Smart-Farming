@@ -1,15 +1,15 @@
 require("dotenv").config();
 
-const express = require('express')
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
+const express = require("express");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 // routes calling
-const projectRoutes = require('./routes/projectroutes');
-const userRoutes = require('./routes/userroutes');
-const authRoutes = require('./routes/authentication');
-const weatherRouter = require('./routes/weatherRouter');
-const weeklyforecastRoutes = require('./routes/weeklyforecast');
+const projectRoutes = require("./routes/projectroutes");
+const userRoutes = require("./routes/userroutes");
+const authRoutes = require("./routes/authentication");
+const dailyforecastRoutes = require("./routes/dailyforecast");
+const weeklyforecastRoutes = require("./routes/weeklyforecast");
 
 // express app
 const app = express();
@@ -26,10 +26,10 @@ app.use((req, res, next) => {
 });
 
 app.use(projectRoutes);
-app.use('/api/users', userRoutes);
-app.use('/auth', authRoutes); 
-app.use('/api/weather', weatherRouter);
-app.use('/api/weather', weeklyforecastRoutes);
+app.use("/api/users", userRoutes);
+app.use("/auth", authRoutes);
+app.use("/api/weather", dailyforecastRoutes);
+app.use("/api/weather", weeklyforecastRoutes);
 
 // Connect to mongodb
 mongoose

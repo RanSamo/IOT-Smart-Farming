@@ -1,4 +1,6 @@
-// import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import { useParams } from "react-router-dom";
 // import {
 //   Container,
 //   Grid,
@@ -16,17 +18,61 @@
 //   Air as WindIcon,
 //   WbSunny as SunIcon,
 //   Warning as AlertTriangleIcon,
-//   Grass as GrassIcon,
-//   Insects as InsectsIcon,
-//   Fungus as FungusIcon,
 // } from "@mui/icons-material";
 
 // const WeatherDashboard = () => {
+//   const { farmId } = useParams();
+//   console.log("Farm ID:", farmId);
 //   const [activeTab, setActiveTab] = useState(0);
+//   const [currentWeather, setCurrentWeather] = useState(null);
+//   const [weeklyForecast, setWeeklyForecast] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   // router.get('/current-weather/:farmId', async (req, res) => {
+//   //   let farmId = req.params.farmId.trim();
+
+//   useEffect(() => {
+//     const fetchWeatherData = async () => {
+//       try {
+//         const token = localStorage.getItem("token");
+//         const config = {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         };
+//         // Fetch current weather
+//         const currentResponse = await axios.get(
+//           `/api/weather/current-weather/${farmId}`,
+//           config
+//         );
+//         console.log("Weather data from backend:", currentResponse.data);
+//         setCurrentWeather(currentResponse.data);
+
+//         // Fetch weekly forecast
+//         const forecastResponse = await axios.get(
+//           `/api/weather/weeklyforecast/${farmId}`,
+//           config
+//         );
+//         console.log("forecast Response from backend:", forecastResponse.data);
+//         setWeeklyForecast(forecastResponse.data);
+
+//         setLoading(false);
+//         console.log("Weather data and forecast fetched successfully!");
+//       } catch (err) {
+//         setError(err);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchWeatherData();
+//   }, [farmId]);
 
 //   const handleTabChange = (event, newValue) => {
 //     setActiveTab(newValue);
 //   };
+
+//   if (loading) return <Typography>Loading...</Typography>;
+//   if (error) return <Typography>Error fetching weather data</Typography>;
 
 //   return (
 //     <Container maxWidth="xl" sx={{ py: 3 }}>
@@ -38,52 +84,61 @@
 //               <Typography variant="h6" gutterBottom>
 //                 Current Conditions
 //               </Typography>
-//               <Box
-//                 display="flex"
-//                 alignItems="center"
-//                 justifyContent="space-between"
-//               >
-//                 <Box>
-//                   <Typography variant="h3" fontWeight="bold">
-//                     24°C
-//                   </Typography>
-//                   <Typography color="textSecondary">Partly Cloudy</Typography>
+//               {currentWeather && (
+//                 <Box
+//                   display="flex"
+//                   alignItems="center"
+//                   justifyContent="space-between"
+//                 >
+//                   <Box>
+//                     <Typography variant="h3" fontWeight="bold">
+//                       {currentWeather.temperature.current.toFixed(1)}°C
+//                     </Typography>
+//                     <Typography color="textSecondary">
+//                       {currentWeather.weatherConditions.description}
+//                     </Typography>
+//                   </Box>
+//                   <img
+//                     src={currentWeather.weatherConditions.icon}
+//                     alt="Weather icon"
+//                     style={{ width: 64, height: 64 }}
+//                   />
 //                 </Box>
-//                 <CloudIcon sx={{ fontSize: 64, color: "primary.main" }} />
-//               </Box>
+//               )}
 //               <Grid container spacing={2} mt={2}>
-//                 {[
-//                   {
-//                     Icon: DropletsIcon,
-//                     label: "Humidity",
-//                     value: "65%",
-//                     color: "primary.main",
-//                   },
-//                   {
-//                     Icon: WindIcon,
-//                     label: "Wind",
-//                     value: "12 km/h",
-//                     color: "primary.main",
-//                   },
-//                   {
-//                     Icon: SunIcon,
-//                     label: "UV Index",
-//                     value: "6 - High",
-//                     color: "warning.main",
-//                   },
-//                 ].map(({ Icon, label, value, color }, index) => (
-//                   <Grid item xs={4} key={index}>
-//                     <Box display="flex" alignItems="center" gap={1}>
-//                       <Icon sx={{ color }} />
-//                       <Box>
-//                         <Typography variant="body2" color="textSecondary">
-//                           {label}
-//                         </Typography>
-//                         <Typography>{value}</Typography>
+//                 {currentWeather &&
+//                   [
+//                     {
+//                       Icon: DropletsIcon,
+//                       label: "Humidity",
+//                       value: `${currentWeather.humidity.percentage}%`,
+//                       color: "primary.main",
+//                     },
+//                     {
+//                       Icon: WindIcon,
+//                       label: "Wind",
+//                       value: `${currentWeather.wind.speed} km/h`,
+//                       color: "primary.main",
+//                     },
+//                     {
+//                       Icon: SunIcon,
+//                       label: "Clouds",
+//                       value: `${currentWeather.clouds.coverage}%`,
+//                       color: "warning.main",
+//                     },
+//                   ].map(({ Icon, label, value, color }, index) => (
+//                     <Grid item xs={4} key={index}>
+//                       <Box display="flex" alignItems="center" gap={1}>
+//                         <Icon sx={{ color }} />
+//                         <Box>
+//                           <Typography variant="body2" color="textSecondary">
+//                             {label}
+//                           </Typography>
+//                           <Typography>{value}</Typography>
+//                         </Box>
 //                       </Box>
-//                     </Box>
-//                   </Grid>
-//                 ))}
+//                     </Grid>
+//                   ))}
 //               </Grid>
 //             </CardContent>
 //           </Card>
@@ -139,72 +194,36 @@
 //             <Card sx={{ mt: 2 }}>
 //               <CardContent>
 //                 <Grid container spacing={2}>
-//                   {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-//                     (day, index) => (
-//                       <Grid item xs key={index} textAlign="center">
-//                         <Typography>{day}</Typography>
-//                         <ThermometerIcon />
-//                         <Typography variant="body1">24°C</Typography>
-//                         <Typography variant="body2" color="textSecondary">
-//                           16°C
-//                         </Typography>
-//                       </Grid>
-//                     )
-//                   )}
+//                   {weeklyForecast.map((day, index) => (
+//                     <Grid item xs key={index} textAlign="center">
+//                       <Typography>
+//                         {new Date(day.date).toLocaleDateString("en-US", {
+//                           weekday: "short",
+//                         })}
+//                       </Typography>
+//                       <img
+//                         src={day.icon}
+//                         alt="Forecast icon"
+//                         style={{ width: 40, height: 40 }}
+//                       />
+//                       <Typography variant="body1">
+//                         {day.tempMax.toFixed(1)}°C
+//                       </Typography>
+//                       <Typography variant="body2" color="textSecondary">
+//                         {day.tempMin.toFixed(1)}°C
+//                       </Typography>
+//                     </Grid>
+//                   ))}
 //                 </Grid>
 //               </CardContent>
 //             </Card>
 //           )}
 
+//           {/* Existing Soil Conditions and Pest Risk Analysis tabs remain unchanged */}
 //           {activeTab === 1 && (
 //             <Card sx={{ mt: 2 }}>
 //               <CardContent>
-//                 <Grid container spacing={3}>
-//                   <Grid item xs={12} md={6}>
-//                     <Box>
-//                       <Typography variant="h6" gutterBottom>
-//                         Current Soil Conditions
-//                       </Typography>
-//                       <Grid container spacing={2}>
-//                         <Grid item xs={6}>
-//                           <Box p={2} border={1} borderRadius={1}>
-//                             <Typography variant="body2" color="textSecondary">
-//                               Moisture
-//                             </Typography>
-//                             <Typography variant="h5" fontWeight="bold">
-//                               32%
-//                             </Typography>
-//                           </Box>
-//                         </Grid>
-//                         <Grid item xs={6}>
-//                           <Box p={2} border={1} borderRadius={1}>
-//                             <Typography variant="body2" color="textSecondary">
-//                               Temperature
-//                             </Typography>
-//                             <Typography variant="h5" fontWeight="bold">
-//                               18°C
-//                             </Typography>
-//                           </Box>
-//                         </Grid>
-//                       </Grid>
-//                     </Box>
-//                   </Grid>
-//                   <Grid item xs={12} md={6}>
-//                     <Box>
-//                       <Typography variant="h6" gutterBottom>
-//                         3-Day Forecast
-//                       </Typography>
-//                       <Box p={2} border={1} borderRadius={1}>
-//                         <Typography variant="body2" color="textSecondary">
-//                           Moisture Trend
-//                         </Typography>
-//                         <Typography variant="body1" color="success.main">
-//                           ↗ Increasing
-//                         </Typography>
-//                       </Box>
-//                     </Box>
-//                   </Grid>
-//                 </Grid>
+//                 {/* Existing Soil Conditions content */}
 //               </CardContent>
 //             </Card>
 //           )}
@@ -212,53 +231,7 @@
 //           {activeTab === 2 && (
 //             <Card sx={{ mt: 2 }}>
 //               <CardContent>
-//                 <Typography variant="h6" gutterBottom>
-//                   Current Risk Levels
-//                 </Typography>
-//                 <Grid container spacing={2}>
-//                   <Grid item xs={12} md={4}>
-//                     <Box p={2} border={1} borderRadius={1}>
-//                       <Typography variant="body2" color="textSecondary">
-//                         Fungal Disease Risk
-//                       </Typography>
-//                       <Typography
-//                         variant="h5"
-//                         fontWeight="bold"
-//                         color="warning.main"
-//                       >
-//                         Medium
-//                       </Typography>
-//                     </Box>
-//                   </Grid>
-//                   <Grid item xs={12} md={4}>
-//                     <Box p={2} border={1} borderRadius={1}>
-//                       <Typography variant="body2" color="textSecondary">
-//                         Insect Activity
-//                       </Typography>
-//                       <Typography
-//                         variant="h5"
-//                         fontWeight="bold"
-//                         color="success.main"
-//                       >
-//                         Low
-//                       </Typography>
-//                     </Box>
-//                   </Grid>
-//                   <Grid item xs={12} md={4}>
-//                     <Box p={2} border={1} borderRadius={1}>
-//                       <Typography variant="body2" color="textSecondary">
-//                         Weed Growth
-//                       </Typography>
-//                       <Typography
-//                         variant="h5"
-//                         fontWeight="bold"
-//                         color="error.main"
-//                       >
-//                         High
-//                       </Typography>
-//                     </Box>
-//                   </Grid>
-//                 </Grid>
+//                 {/* Existing Pest Risk Analysis content */}
 //               </CardContent>
 //             </Card>
 //           )}
@@ -291,6 +264,39 @@ import {
   WbSunny as SunIcon,
   Warning as AlertTriangleIcon,
 } from "@mui/icons-material";
+import {
+  Sun,
+  Cloud,
+  CloudDrizzle,
+  CloudRain,
+  CloudSnow,
+  Droplets,
+  Wind,
+} from "lucide-react";
+
+const getWeatherIcon = (condition) => {
+  const cleanCondition = condition?.toLowerCase().replace(/\s+/g, "");
+  switch (cleanCondition) {
+    case "clear":
+    case "clearsky":
+      return <Sun className="text-yellow-500" size={64} />;
+    case "partlycloudy":
+    case "scatteredclouds":
+      return <Cloud className="text-gray-400" size={64} />;
+    case "cloudy":
+    case "overcast":
+      return <Cloud className="text-gray-600" size={64} />;
+    case "rain":
+    case "lightrain":
+      return <CloudRain className="text-blue-500" size={64} />;
+    case "drizzle":
+      return <CloudDrizzle className="text-blue-400" size={64} />;
+    case "snow":
+      return <CloudSnow className="text-blue-200" size={64} />;
+    default:
+      return <Sun className="text-yellow-500" size={64} />;
+  }
+};
 
 const WeatherDashboard = () => {
   const { farmId } = useParams();
@@ -370,11 +376,7 @@ const WeatherDashboard = () => {
                       {currentWeather.weatherConditions.description}
                     </Typography>
                   </Box>
-                  <img
-                    src={currentWeather.weatherConditions.icon}
-                    alt="Weather icon"
-                    style={{ width: 64, height: 64 }}
-                  />
+                  {getWeatherIcon(currentWeather.weatherConditions.description)}
                 </Box>
               )}
               <Grid container spacing={2} mt={2}>
@@ -473,11 +475,7 @@ const WeatherDashboard = () => {
                           weekday: "short",
                         })}
                       </Typography>
-                      <img
-                        src={day.icon}
-                        alt="Forecast icon"
-                        style={{ width: 40, height: 40 }}
-                      />
+                      {getWeatherIcon(day.description)}
                       <Typography variant="body1">
                         {day.tempMax.toFixed(1)}°C
                       </Typography>

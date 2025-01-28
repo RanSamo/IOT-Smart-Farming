@@ -29,7 +29,6 @@
     "react-router-dom": "^7.1.1",
     "react-scripts": "^5.0.1",
     "recharts": "^2.15.0",
-    "set-blocking": "^2.0.0",
-    "shadcn-ui": "^0.9.4"
+    "set-blocking": "^2.0.0"
   }
 }

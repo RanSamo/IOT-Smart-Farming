@@ -306,19 +306,30 @@ const WeatherDashboard = () => {
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
+        const token = localStorage.getItem("token");
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
         // Fetch current weather
         const currentResponse = await axios.get(
-          `/api/weather/current-weather/${farmId}`
+          `/api/weather/current-weather/${farmId}`,
+          config
         );
+        console.log("Weather data from backend:", currentResponse.data);
         setCurrentWeather(currentResponse.data);
 
         // Fetch weekly forecast
         const forecastResponse = await axios.get(
-          `/weather/weeklyforecast/${farmId}`
+          `/api/weather/weeklyforecast/${farmId}`,
+          config
         );
+        console.log("forecast Response from backend:", forecastResponse.data);
         setWeeklyForecast(forecastResponse.data);
 
         setLoading(false);
+        console.log("Weather data and forecast fetched successfully!");
       } catch (err) {
         setError(err);
         setLoading(false);

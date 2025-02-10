@@ -160,11 +160,6 @@ const WeatherDashboard = () => {
           axios.get(`/api/weather/weeklyforecast/${farmId}`, config),
         ]);
 
-      console.log('Current Weather Full Object:', currentResponse.data);
-      console.log('Weather Description:', currentResponse.data?.weatherConditions?.description);
-      console.log('Weather Main:', currentResponse.data?.weatherConditions?.main);
-      console.log('Weekly Forecast Data:', forecastResponse.data);
-
         setCurrentWeather(currentResponse.data);
         setWeeklyForecast(forecastResponse.data);
         setLoading(false);

@@ -278,6 +278,11 @@ const WeatherDashboard = () => {
             bgcolor: "rgba(255, 255, 255, 0.3)",
             p: 1.5,
             borderRadius: "12px",
+            transition: "transform 0.2s",
+            "&:hover": {
+              transform: "translateY(-2px)",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+            }
           }}
         >
           <Icon
@@ -369,6 +374,12 @@ const WeatherDashboard = () => {
                           bgcolor: "rgba(255, 255, 255, 0.5)",
                           p: 0.5,
                           borderRadius: "12px",
+                          transition: "transform 0.2s",
+                          "&:hover": {
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                            bgcolor: "rgba(255, 255, 255, 0.7)",
+                          }
                         }}
                       >
                         <Icon

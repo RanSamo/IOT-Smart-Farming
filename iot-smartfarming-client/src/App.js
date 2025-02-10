@@ -15,6 +15,7 @@ import { ThemeProvider } from "@mui/material";
 import mainTheme from "./Themes/mainTheme";
 import ProtectedRoute from "./reusable/ProtectedRoute";
 
+
 const App = () => {
   return (
     <ThemeProvider theme={mainTheme}>
@@ -46,7 +47,7 @@ const App = () => {
               }
             />
              <Route
-              path="/weatherDashboard/:farmId"
+              path="/WeatherDashboard/:farmId"
               element={
                 <ProtectedRoute>
                   <WeatherDashboard />

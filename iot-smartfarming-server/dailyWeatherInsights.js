@@ -93,4 +93,4 @@ async function getGroqDailyChatCompletion(message, weatherData) {
   });
 }
 
-module.exports = { getDailyWeatherInsights };
+module.exports = { getDailyWeatherInsights};

@@ -49,33 +49,63 @@ const processWeatherData = (data) => {
   };
 };
 
+// const getCurrentWeather = async(req, res) =>
+// {
+//   const farmId = req.params.farmId.trim();
+
+//   try {
+//     const farm = await Farm.findById(farmId);
+//     if (!farm) {
+//       return res.status(404).json({ error: 'Farm not found' });
+//     }
+
+//     if (!farm.location) {
+//       return res.status(400).json({ error: 'Farm location is not defined' });
+//     }
+
+//     const city = normalizeCityName(farm.location);
+
+//     const weatherData = await fetchCurrentWeather(city);
+
+//     const processedData = processWeatherData(weatherData);
+
+//     res.json(processedData);
+//   } catch (error) {
+//     console.error('Error fetching weather data:', error.message);
+//     res.status(500).json({ error: 'Failed to fetch weather data' });
+//   }
+// }
+
 const getCurrentWeather = async(req, res) =>
-{
-  const farmId = req.params.farmId.trim();
-
-  try {
-    const farm = await Farm.findById(farmId);
-    if (!farm) {
-      return res.status(404).json({ error: 'Farm not found' });
+  {
+    try {
+      const { farmId } = req.params;
+   
+      if (!farmId) {
+        return res.status(400).json({ error: 'Farm ID is required' });
+      }  
+      const farm = await Farm.findById(farmId);
+      if (!farm) {
+        return res.status(404).json({ error: 'Farm not found' });
+      }
+  
+      if (!farm.location) {
+        return res.status(400).json({ error: 'Farm location is not defined' });
+      }
+  
+      const city = normalizeCityName(farm.location);
+  
+      const weatherData = await fetchCurrentWeather(city);
+  
+      const processedData = processWeatherData(weatherData);
+  
+      res.json(processedData);
+    } catch (error) {
+      console.error('Error fetching weather data:', error.message);
+      res.status(500).json({ error: 'Failed to fetch weather data' });
     }
-
-    if (!farm.location) {
-      return res.status(400).json({ error: 'Farm location is not defined' });
-    }
-
-    const city = normalizeCityName(farm.location);
-
-    const weatherData = await fetchCurrentWeather(city);
-
-    const processedData = processWeatherData(weatherData);
-
-    res.json(processedData);
-  } catch (error) {
-    console.error('Error fetching weather data:', error.message);
-    res.status(500).json({ error: 'Failed to fetch weather data' });
   }
-}
-
+  
 module.exports = {getCurrentWeather};
 
 

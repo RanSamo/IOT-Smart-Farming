@@ -1,3 +1,6 @@
+//const {getWeeklyForecast} = require('./routes/weeklyforecast');
+//const {getDailyWeatherInsights} = require('./dailyWeatherInsights');
+const {getCurrentWeather} = require('./routes/dailyforecast');
 const {getWeeklyForecast} = require('./routes/weeklyforecast');
 const Groq = require('groq-sdk');
 
@@ -51,16 +54,18 @@ res.status(200).json({
 
 
 async function getGroqChatCompletion(message, farmId) {
-  const weatherSummary = getWeeklyForecast(farmId);
+  const weeklyWeatherSummary = getWeeklyForecast(farmId);
+  const dailyWeatherSummary = getCurrentWeather(farmId);
   return groq.chat.completions.create({
     messages: [
       {
         role: 'system',
-        content: `You are a consultant for a farmer. Use the provided weather forecast to give two insights. Be concise and helpful.`,
+        content: `You are a consultant for a farmer. You are receiving weekly and daily forecasts summaries, we need 2 insights for each of the summaries, please provide the 2 most important ones for each forcest. Be concise and helpful.
+ `,
       },
       {
         role: 'assistant',
-        content: `Weather forecast: ${weatherSummary}`,
+        content: `Weather forecasts: ${weeklyWeatherSummary, dailyWeatherSummary}`,
       },
       {
         role: 'user',

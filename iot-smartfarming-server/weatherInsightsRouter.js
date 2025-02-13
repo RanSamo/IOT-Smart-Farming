@@ -54,18 +54,16 @@ res.status(200).json({
 
 
 async function getGroqChatCompletion(message, farmId) {
-  const weeklyWeatherSummary = getWeeklyForecast(farmId);
-  const dailyWeatherSummary = getCurrentWeather(farmId);
+  const weatherSummary = getWeeklyForecast(farmId);
   return groq.chat.completions.create({
     messages: [
       {
         role: 'system',
-        content: `You are a consultant for a farmer. You are receiving weekly and daily forecasts summaries, we need 2 insights for each of the summaries, please provide the 2 most important ones for each forcest. Be concise and helpful.
- `,
+        content: `You are a consultant for a farmer. Use the provided weather forecast to give two insights. Be concise and helpful.`,
       },
       {
         role: 'assistant',
-        content: `Weather forecasts: ${weeklyWeatherSummary, dailyWeatherSummary}`,
+        content: `Weather forecast: ${weatherSummary}`,
       },
       {
         role: 'user',
@@ -79,7 +77,7 @@ async function getGroqChatCompletion(message, farmId) {
 module.exports = { getWeatherInsights };
 
 
-
+  
 // // פונקציה לשליפת תחזית מזג האוויר מהראוטר הקיים
 // const fetchWeatherForecastFromRouter = async (farmId) => {
 //   const url = `http://localhost:5000/api/weather/weeklyforecast/${farmId}`;

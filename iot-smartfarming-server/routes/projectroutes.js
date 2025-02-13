@@ -9,9 +9,15 @@ const { getAllData,
 const { getinsights } = require('../insightsAPI');
 const {getCurrentWeather} = require('../routes/dailyforecast');
 const { getWeeklyForecastMiddleware } = require('../routes/weeklyforecast'); 
-const {getWeatherInsights} = require('../weatherInsightsRouter');
+//const {getWeatherInsights} = require('../weatherInsightsRouter');
 const { getDailyWeatherInsights } = require('../dailyWeatherInsights');
 const router = express.Router();
+
+//testing the new weather insights file I (Ram) created
+const { getWeatherInsights } = require('../TEST-weatherInsights'); 
+router.post('/api/weatherinsights/:farmId', async (req, res) => {
+    await getWeatherInsights(req,res);
+});
 
 // GET all data - irrelevant for now.
 //router.get('/', getAllData);

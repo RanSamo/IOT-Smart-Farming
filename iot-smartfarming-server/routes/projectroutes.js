@@ -10,6 +10,7 @@ const { getinsights } = require('../insightsAPI');
 const {getCurrentWeather} = require('../routes/dailyforecast');
 const { getWeeklyForecastMiddleware } = require('../routes/weeklyforecast'); 
 const {getWeatherInsights} = require('../weatherInsightsRouter');
+const { getDailyWeatherInsights } = require('../dailyWeatherInsights');
 const router = express.Router();
 
 // GET all data - irrelevant for now.
@@ -46,6 +47,10 @@ router.post('/api/insights', async (req, res) => {
 
 router.post('/api/weatherinsights/:farmId', async (req, res) => {
     await getWeatherInsights(req,res);
+});
+
+router.post('/api/daily-insights/:farmId', async (req, res) => {
+    await getDailyWeatherInsights(req, res);
 });
 
 // GET one data

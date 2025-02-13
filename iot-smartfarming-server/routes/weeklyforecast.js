@@ -1,4 +1,3 @@
-const express = require('express');
 const axios = require('axios');
 const Farm = require('../models/farmmodel');
 
@@ -18,29 +17,73 @@ const fetchWeeklyForecast = async (lat, lon) => {
   return response.data.list;
 };
 
+// const processWeeklyForecast = (data) => {
+//   const dailyData = {};
+
+//   data.forEach((item) => {
+//     const date = item.dt_txt.split(' ')[0]; 
+//     if (!dailyData[date]) {
+//       dailyData[date] = {
+//         tempMax: item.main.temp_max,
+//         tempMin: item.main.temp_min,
+//         description: item.weather[0].description,
+//         icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
+//       };
+//     } else {
+//       dailyData[date].tempMax = Math.max(dailyData[date].tempMax, item.main.temp_max);
+//       dailyData[date].tempMin = Math.min(dailyData[date].tempMin, item.main.temp_min);
+//     }
+//   });
+
+//   return Object.keys(dailyData).map((date) => ({
+//     date,
+//     ...dailyData[date],
+//   }));
+// };
+
 const processWeeklyForecast = (data) => {
   const dailyData = {};
 
   data.forEach((item) => {
     const date = item.dt_txt.split(' ')[0]; 
+    const description = item.weather[0].description;
+
     if (!dailyData[date]) {
       dailyData[date] = {
         tempMax: item.main.temp_max,
         tempMin: item.main.temp_min,
-        description: item.weather[0].description,
+        descriptionCount: {},
         icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
       };
-    } else {
-      dailyData[date].tempMax = Math.max(dailyData[date].tempMax, item.main.temp_max);
-      dailyData[date].tempMin = Math.min(dailyData[date].tempMin, item.main.temp_min);
     }
+
+    dailyData[date].tempMax = Math.max(dailyData[date].tempMax, item.main.temp_max);
+    dailyData[date].tempMin = Math.min(dailyData[date].tempMin, item.main.temp_min);
+
+    if (!dailyData[date].descriptionCount[description]) {
+      dailyData[date].descriptionCount[description] = 0;
+    }
+    dailyData[date].descriptionCount[description] += 1;
+  });
+
+  Object.keys(dailyData).forEach((date) => {
+    const descriptions = dailyData[date].descriptionCount;
+    const mostFrequentDescription = Object.keys(descriptions).reduce((a, b) =>
+      descriptions[a] > descriptions[b] ? a : b
+    );
+
+    dailyData[date].description = mostFrequentDescription; 
   });
 
   return Object.keys(dailyData).map((date) => ({
     date,
-    ...dailyData[date],
+    tempMax: dailyData[date].tempMax,
+    tempMin: dailyData[date].tempMin,
+    description: dailyData[date].description, 
+    icon: dailyData[date].icon, 
   }));
 };
+
 
 const getWeeklyForecastMiddleware = async (req, res) => {
   try {
@@ -93,87 +136,3 @@ const getWeeklyForecast = async (farmId) => {
 };
 
 module.exports = {getWeeklyForecast, getWeeklyForecastMiddleware};
-
-
-
-
-
-// const getWeeklyForecast = async(farmId) =>
-// {
-//   if (!farmId) {
-//     throw new Error('Farm ID is required');
-//   }
-  
-//   try {
-//     // שליפת פרטי החווה ממסד הנתונים
-//     const farm = await Farm.findById(farmId);
-//     if (!farm) {
-//       return res.status(404).json({ error: 'Farm not found' });
-//     }
-
-//     if (!farm.location) {
-//       return res.status(400).json({ error: 'Farm location is not defined' });
-//     }
-
-//     const city = farm.location.trim();
-
-//     // שליפת קואורדינטות על בסיס שם העיר
-//     const { lat, lon } = await fetchCoordinates(city);
-
-//     // שליפת תחזית שבועית
-//     const weeklyData = await fetchWeeklyForecast(lat, lon);
-
-//     // עיבוד התחזית לפורמט המבוקש
-//     const processedData = processWeeklyForecast(weeklyData);
-
-//     // שליחת התחזית ללקוח
-//     res.status(200).json(processedData);
-//   } catch (error) {
-//     console.error('Error fetching weekly forecast:', error.message);
-//     res.status(500).json({ error: 'Failed to fetch weekly forecast' });
-//   }
-// }
-
-
-// // ראוטר לתחזית שבועית
-// router.get('/weeklyforecast/:farmId', async (req, res) => {
-//     const farmId = req.params.farmId.trim();
-
-//   try {
-//     // שליפת פרטי החווה ממסד הנתונים
-//     const farm = await Farm.findById(farmId);
-//     if (!farm) {
-//       return res.status(404).json({ error: 'Farm not found' });
-//     }
-
-//     if (!farm.location) {
-//       return res.status(400).json({ error: 'Farm location is not defined' });
-//     }
-
-//     const city = farm.location.trim();
-
-//     // שליפת קואורדינטות על בסיס שם העיר
-//     const { lat, lon } = await fetchCoordinates(city);
-
-//     // שליפת תחזית שבועית
-//     const weeklyData = await fetchWeeklyForecast(lat, lon);
-
-//     // עיבוד התחזית לפורמט המבוקש
-//     const processedData = processWeeklyForecast(weeklyData);
-
-//     // שליחת התחזית ללקוח
-//     res.json(processedData);
-//   } catch (error) {
-//     console.error('Error fetching weekly forecast:', error.message);
-//     res.status(500).json({ error: 'Failed to fetch weekly forecast' });
-//   }
-// });
-
-// router.post('/insights', async (req, res) => {
-//   try {
-//     await getWeatherInsights(req, res); // הפעלת הפונקציה
-//   } catch (error) {
-//     console.error('Error in getWeatherInsights:', error.message);
-//     res.status(500).json({ error: 'Failed to get weather insights' });
-//   }
-// });

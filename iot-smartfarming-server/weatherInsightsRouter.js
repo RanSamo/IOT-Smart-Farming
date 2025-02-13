@@ -1,4 +1,3 @@
-const {getCurrentWeather} = require('./routes/dailyforecast');
 const {getWeeklyForecast} = require('./routes/weeklyforecast');
 const Groq = require('groq-sdk');
 
@@ -27,7 +26,22 @@ async function getWeatherInsights(req, res) {
         throw new Error("Invalid response from Groq API");
       }
 
-      res.status(200).json({ message: chatCompletion.choices[0].message.content });
+      const responseText = String(chatCompletion.choices[0]?.message?.content || "").trim();
+      
+      const insights = responseText
+      .split(/(?<=\.)\s+/) 
+      .map(line => line.replace(/^\d+\.\s*/, "").trim())
+      .filter((line, index, arr) =>
+      !(index > 0 && arr[index - 1].endsWith(":") && line === "1.") 
+  );
+
+res.status(200).json({
+  message: insights.map((line, index) => `${index + 1}. ${line}`)
+});
+
+
+
+      
 
   } catch (error) {
       console.error("Error in getWeatherInsights:", error.message);

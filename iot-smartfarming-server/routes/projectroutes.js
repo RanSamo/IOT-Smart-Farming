@@ -9,8 +9,6 @@ const { getAllData,
 const { getinsights } = require('../insightsAPI');
 const {getCurrentWeather} = require('../routes/dailyforecast');
 const { getWeeklyForecastMiddleware } = require('../routes/weeklyforecast'); 
-//const {getWeatherInsights} = require('../weatherInsightsRouter');
-const { getDailyWeatherInsights } = require('../dailyWeatherInsights');
 const { getWeatherInsights } = require('../weatherInsights'); 
 
 const router = express.Router();

@@ -25,9 +25,13 @@ const calculateHealthScore = (humidity, lightIntensity, phLevel) => { // the fun
     return Math.max(0, score); // Ensure score is not negative
 };
 
-const getAllAverageData = async () => {
+const getAllAverageData = async (farmId) => {
     try {
         const allData = await projdata.aggregate([
+            {
+                //$match:{farmId: mongoose.Types.ObjectId(farmId)} // match the farmId to the data.
+                $match: {farmId: farmId} 
+            },
             {
                 $group: {
                     _id: { // this is to make sure this  func will work for years to come, not only for recent days.

@@ -4,6 +4,10 @@ const Schema = mongoose.Schema
 
 const projectSchema = new mongoose.Schema({ // The schema contains the features we have in the dashboard Paz shared in the group chat
     
+    farmId:{ // the range or most crops is between 20 to 30 degrees Celsius.
+        type:String,
+        required:false 
+    },
     temperature:{ // the range or most crops is between 20 to 30 degrees Celsius.
         type:Number,
         required:false 

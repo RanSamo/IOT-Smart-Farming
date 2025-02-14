@@ -4,6 +4,7 @@ const { getAllData,
     getLastData,
     createData,
     deleteData,
+    deleteAllData,
     updateData
 } = require('../controllers/projectController');
 const { getinsights } = require('../insightsAPI');
@@ -20,7 +21,7 @@ const router = express.Router();
 //router.get('/', getAllData);
 
 // GET last data
-router.get('/getLastData', getLastData); //This GET gets the last data recoreded in the DB.
+router.get('/getLastData/:farmId', getLastData); //This GET gets the last data recoreded in the DB for the farm calling for it.
 
 // GET dailyforecast
 router.get('/current-weather/:farmId', getCurrentWeather);
@@ -47,6 +48,9 @@ router.post('/api/data', createData);
 
 // DELETE data
 router.delete('/api/data/:id', deleteData);
+
+// DELETE all data
+router.delete('/api/data', deleteAllData);
 
 // PATCH data
 router.patch('/api/data/:id', updateData);

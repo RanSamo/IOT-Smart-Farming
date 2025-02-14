@@ -35,11 +35,6 @@ async function getWeatherInsights(req, res) {
 
     const responseText = String(chatCompletion.choices[0]?.message?.content || "").trim();
 
-    // const insights = responseText
-    //   .split(/(?<=\.)\s+/)
-    //   .map(line => line.replace(/^\d+\.\s*/, "").trim())
-    //   .filter(line => line.length > 0);
-
     const insights = extractInsights(responseText);
 
     res.status(200).json({

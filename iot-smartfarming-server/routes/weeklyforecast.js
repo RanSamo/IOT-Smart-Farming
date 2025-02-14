@@ -17,29 +17,6 @@ const fetchWeeklyForecast = async (lat, lon) => {
   return response.data.list;
 };
 
-// const processWeeklyForecast = (data) => {
-//   const dailyData = {};
-
-//   data.forEach((item) => {
-//     const date = item.dt_txt.split(' ')[0]; 
-//     if (!dailyData[date]) {
-//       dailyData[date] = {
-//         tempMax: item.main.temp_max,
-//         tempMin: item.main.temp_min,
-//         description: item.weather[0].description,
-//         icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
-//       };
-//     } else {
-//       dailyData[date].tempMax = Math.max(dailyData[date].tempMax, item.main.temp_max);
-//       dailyData[date].tempMin = Math.min(dailyData[date].tempMin, item.main.temp_min);
-//     }
-//   });
-
-//   return Object.keys(dailyData).map((date) => ({
-//     date,
-//     ...dailyData[date],
-//   }));
-// };
 
 const processWeeklyForecast = (data) => {
   const dailyData = {};

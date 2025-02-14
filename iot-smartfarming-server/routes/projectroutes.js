@@ -7,7 +7,14 @@ const { getAllData,
     updateData
 } = require('../controllers/projectController');
 const { getinsights } = require('../insightsAPI');
+const {getCurrentWeather} = require('../routes/dailyforecast');
+const { getWeeklyForecastMiddleware } = require('../routes/weeklyforecast'); 
+const { getWeatherInsights } = require('../weatherInsights'); 
+
 const router = express.Router();
+
+
+
 
 // GET all data - irrelevant for now.
 //router.get('/', getAllData);
@@ -15,24 +22,21 @@ const router = express.Router();
 // GET last data
 router.get('/getLastData', getLastData); //This GET gets the last data recoreded in the DB.
 
+// GET dailyforecast
+router.get('/current-weather/:farmId', getCurrentWeather);
 
-/*
-// POST for data to groq API
-router.post('/api/insights', async (req, res) =>{
-    const message = req.body.message;
-    await getinsights(message).then(() =>{
-    res.status(200).json({message: 'Chat Completed.'}); 
-    }).catch((error) =>{
-        res.status(400).json({error: error.message});    
-});
-});
-*/
+// GET weeklyforecast
+router.get('/weeklyforecast/:farmId', getWeeklyForecastMiddleware);
 
 
 // the Groq says this is the preffered way to do it, but I think the above works as well, need to check.
 //TODO. need to check which of the posts are better for this function, will see after Paz's part in the frontend.
 router.post('/api/insights', async (req, res) => {
     await getinsights(req,res);
+});
+
+router.post('/api/weatherinsights/:farmId', async (req, res) => {
+    await getWeatherInsights(req,res);
 });
 
 // GET one data

@@ -43,7 +43,7 @@ const WeatherIcon = ({ condition = "clouds", size = "medium", ...props }) => {
 
   const getIconByCondition = () => {
     const condition_lc = (condition || "").toLowerCase();
-    
+
     switch (true) {
       case condition_lc.includes("clear sky"):
         return <SunIcon sx={{ ...getIconStyle(), color: "#fbbf24" }} />;
@@ -143,6 +143,7 @@ const WeatherDashboard = () => {
   const { farmId } = useParams();
   const [currentWeather, setCurrentWeather] = useState(null);
   const [weeklyForecast, setWeeklyForecast] = useState([]);
+  const [insights, setInsights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const currentWeatherIcon = currentWeather?.weatherConditions?.description;
@@ -155,15 +156,32 @@ const WeatherDashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
         };
 
-        const [currentResponse, forecastResponse] = await Promise.all([
-          axios.get(`/api/weather/current-weather/${farmId}`, config),
-          axios.get(`/api/weather/weeklyforecast/${farmId}`, config),
-        ]);
+        const [currentResponse, forecastResponse, insightsResponse] =
+          await Promise.all([
+            axios.get(`/api/weather/current-weather/${farmId}`, config),
+            axios.get(`/api/weather/weeklyforecast/${farmId}`, config),
+            axios.post(
+              `/api/weather/insights/${farmId}`,
+              {
+                message: "Please provide weather insights for my farm",
+              },
+              config
+            ),
+          ]);
+
+        console.log("Insights response:", insightsResponse.data);
 
         setCurrentWeather(currentResponse.data);
         setWeeklyForecast(forecastResponse.data);
+        setInsights(
+          insightsResponse.data.message
+            .split("\n")
+            .filter((line) => line.trim().startsWith("*"))
+            .map((line) => line.trim().substring(2).trim())
+        );
         setLoading(false);
       } catch (err) {
+        console.error("Error fetching data:", err);
         setError(err);
         setLoading(false);
       }
@@ -171,6 +189,33 @@ const WeatherDashboard = () => {
 
     fetchWeatherData();
   }, [farmId]);
+
+  const getIconForInsight = (insight) => {
+    const lowerInsight = insight.toLowerCase();
+    if (lowerInsight.includes("wind")) return WindIcon;
+    if (
+      lowerInsight.includes("rain") ||
+      lowerInsight.includes("moisture") ||
+      lowerInsight.includes("humidity")
+    )
+      return HumidityIcon;
+    if (
+      lowerInsight.includes("temperature") ||
+      lowerInsight.includes("heat") ||
+      lowerInsight.includes("warm")
+    )
+      return SunIcon;
+    if (
+      lowerInsight.includes("snow") ||
+      lowerInsight.includes("frost") ||
+      lowerInsight.includes("cold")
+    )
+      return SnowIcon;
+    if (lowerInsight.includes("storm") || lowerInsight.includes("thunder"))
+      return StormIcon;
+    if (lowerInsight.includes("cloud")) return CloudIcon;
+    return AlertIcon;
+  };
 
   if (loading) {
     return (
@@ -214,107 +259,122 @@ const WeatherDashboard = () => {
                 height: "100%",
               }}
             >
-   <CardContent sx={{ p: 3 }}>
-  <Typography variant="h6" sx={{ fontWeight: 600, color: "#064e3b", mb: 3 }}>
-    Current Conditions
-  </Typography>
-  <Typography sx={{ color: "#065f46", fontSize: "1.1rem", mb: 3, fontWeight: 600 }}>
-    {new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    })}
-  </Typography>
-  <Box sx={{
-    display: "flex",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    mb: 3
-  }}>
-    <Box>
-      <Typography variant="h2" sx={{ fontWeight: 700, color: "#064e3b", mb: 1 }}>
-        {currentWeather?.temperature?.current?.toFixed(1)}°C
-      </Typography>
-      <Typography sx={{ color: "#065f46" }}>
-        {currentWeather?.weatherConditions?.description}
-      </Typography>
-    </Box>
-    <WeatherIcon
-      condition={currentWeatherIcon}
-      size="large"
-      sx={{ color: "#064e3b" }}
-    />
-  </Box>
-  <Grid container spacing={3}>
-    {[
-      {
-        Icon: HumidityIcon,
-        label: "Humidity",
-        value: `${currentWeather?.humidity?.percentage}%`,
-      },
-      {
-        Icon: WindIcon,
-        label: "Wind",
-        value: `${currentWeather?.wind?.speed} km/h`,
-      },
-      {
-        Icon: CloudIcon,
-        label: "Clouds",
-        value: `${currentWeather?.clouds?.coverage}%`,
-      },
-    ].map(({ Icon, label, value }, index) => (
-      <Grid item xs={4} key={index}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            bgcolor: "rgba(255, 255, 255, 0.3)",
-            p: 1.5,
-            borderRadius: "12px",
-            transition: "transform 0.2s",
-            "&:hover": {
-              transform: "translateY(-2px)",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-            }
-          }}
-        >
-          <Icon
-            sx={{
-              color: "#064e3b",
-              fontSize: "28px",
-              backgroundColor: "rgba(255, 255, 255, 0.5)",
-              padding: "8px",
-              borderRadius: "50%",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-            }}
-          />
-          <Box>
-            <Typography
-              sx={{
-                color: "#065f46",
-                fontSize: "0.875rem",
-                fontWeight: 500,
-              }}
-            >
-              {label}
-            </Typography>
-            <Typography
-              sx={{
-                color: "#064e3b",
-                fontWeight: 600,
-                fontSize: "1.125rem",
-              }}
-            >
-              {value || "N/A"}
-            </Typography>
-          </Box>
-        </Box>
-      </Grid>
-    ))}
-  </Grid>
-</CardContent>
+              <CardContent sx={{ p: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 600, color: "#064e3b", mb: 3 }}
+                >
+                  Current Conditions
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "#065f46",
+                    fontSize: "1.1rem",
+                    mb: 3,
+                    fontWeight: 600,
+                  }}
+                >
+                  {new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    mb: 3,
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      variant="h2"
+                      sx={{ fontWeight: 700, color: "#064e3b", mb: 1 }}
+                    >
+                      {currentWeather?.temperature?.current?.toFixed(1)}°C
+                    </Typography>
+                    <Typography sx={{ color: "#065f46" }}>
+                      {currentWeather?.weatherConditions?.description}
+                    </Typography>
+                  </Box>
+                  <WeatherIcon
+                    condition={currentWeatherIcon}
+                    size="large"
+                    sx={{ color: "#064e3b" }}
+                  />
+                </Box>
+                <Grid container spacing={3}>
+                  {[
+                    {
+                      Icon: HumidityIcon,
+                      label: "Humidity",
+                      value: `${currentWeather?.humidity?.percentage}%`,
+                    },
+                    {
+                      Icon: WindIcon,
+                      label: "Wind",
+                      value: `${currentWeather?.wind?.speed} km/h`,
+                    },
+                    {
+                      Icon: CloudIcon,
+                      label: "Clouds",
+                      value: `${currentWeather?.clouds?.coverage}%`,
+                    },
+                  ].map(({ Icon, label, value }, index) => (
+                    <Grid item xs={4} key={index}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          bgcolor: "rgba(255, 255, 255, 0.3)",
+                          p: 1.5,
+                          borderRadius: "12px",
+                          transition: "transform 0.2s",
+                          "&:hover": {
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                          },
+                        }}
+                      >
+                        <Icon
+                          sx={{
+                            color: "#064e3b",
+                            fontSize: "28px",
+                            backgroundColor: "rgba(255, 255, 255, 0.5)",
+                            padding: "8px",
+                            borderRadius: "50%",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                          }}
+                        />
+                        <Box>
+                          <Typography
+                            sx={{
+                              color: "#065f46",
+                              fontSize: "0.875rem",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {label}
+                          </Typography>
+                          <Typography
+                            sx={{
+                              color: "#064e3b",
+                              fontWeight: 600,
+                              fontSize: "1.125rem",
+                            }}
+                          >
+                            {value || "N/A"}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </CardContent>
             </Card>
           </Grid>
 
@@ -345,55 +405,69 @@ const WeatherDashboard = () => {
                   AI Insights
                 </Typography>
                 <Grid container spacing={3}>
-                  {[
-                    {
-                      Icon: AlertIcon,
-                      text: "Frost risk predicted for tomorrow morning. Consider protective measures for sensitive crops.",
-                    },
-                    {
-                      Icon: HumidityIcon,
-                      text: "Ideal conditions for irrigation in the next 48 hours based on soil moisture and weather forecast.",
-                    },
-                    {
-                      Icon: WindIcon,
-                      text: "Strong winds expected this weekend. Plan outdoor activities accordingly.",
-                    },
-                  ].map(({ Icon, text }, index) => (
-                    <Grid item xs={12} md={4} key={index}>
+                  {insights && insights.length > 0 ? (
+                    insights.map((insight, index) => {
+                      const Icon = getIconForInsight(insight);
+                      return (
+                        <Grid
+                          item
+                          xs={12}
+                          md={insights.length <= 3 ? 4 : 6}
+                          key={index}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "start",
+                              gap: 2,
+                              height: "100%",
+                              bgcolor: "rgba(255, 255, 255, 0.5)",
+                              p: 2,
+                              borderRadius: "12px",
+                              transition: "transform 0.2s",
+                              "&:hover": {
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                                bgcolor: "rgba(255, 255, 255, 0.7)",
+                              },
+                            }}
+                          >
+                            <Icon
+                              sx={{
+                                color: "#854d0e",
+                                fontSize: "24px",
+                                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                                padding: "8px",
+                                borderRadius: "50%",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                                marginTop: "4px",
+                              }}
+                            />
+                            <Typography sx={{ color: "#854d0e", flex: 1 }}>
+                              {insight}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      );
+                    })
+                  ) : (
+                    <Grid item xs={12}>
                       <Box
                         sx={{
                           display: "flex",
-                          alignItems: "start",
-                          gap: 2,
-                          height: "100%",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          p: 3,
                           bgcolor: "rgba(255, 255, 255, 0.5)",
-                          p: 0.5,
                           borderRadius: "12px",
-                          transition: "transform 0.2s",
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                            bgcolor: "rgba(255, 255, 255, 0.7)",
-                          }
                         }}
                       >
-                        <Icon
-                          sx={{
-                            color: "#854d0e",
-                            fontSize: "24px",
-                            backgroundColor: "rgba(255, 255, 255, 0.7)",
-                            padding: "8px",
-                            borderRadius: "50%",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                            marginTop: "4px",
-                          }}
-                        />
                         <Typography sx={{ color: "#854d0e" }}>
-                          {text}
+                          No insights available at the moment
                         </Typography>
                       </Box>
                     </Grid>
-                  ))}
+                  )}
                 </Grid>
               </CardContent>
             </Card>
@@ -430,7 +504,9 @@ const WeatherDashboard = () => {
                           },
                         }}
                       >
-                        <Typography sx={{ color: "#334155", fontWeight: 600, mb: 1 }}>
+                        <Typography
+                          sx={{ color: "#334155", fontWeight: 600, mb: 1 }}
+                        >
                           {new Date(day.date).toLocaleDateString("en-US", {
                             weekday: "short",
                           })}
@@ -441,11 +517,11 @@ const WeatherDashboard = () => {
                           })}
                         </Typography>
                         <Box sx={{ my: 2 }}>
-                        <WeatherIcon
-                        condition={day.description}
-                        size="medium"
-                        sx={{ color: "#334155" }}
-                      />
+                          <WeatherIcon
+                            condition={day.description}
+                            size="medium"
+                            sx={{ color: "#334155" }}
+                          />
                         </Box>
                         <Typography sx={{ color: "#334155", fontWeight: 700 }}>
                           {day?.tempMax?.toFixed(1)}°C

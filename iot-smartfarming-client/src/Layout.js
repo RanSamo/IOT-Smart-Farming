@@ -120,8 +120,6 @@
 
 // export default Layout;
 
-
-
 import React, { useEffect, useState } from "react";
 import {
   Grid,
@@ -141,42 +139,42 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch('/api/users/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+    const token = localStorage.getItem("token");
+    if (token && !farmId) {
+      fetch("/api/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.user && data.user.farmId) {
-          setFarmId(data.user.farmId._id);
-        }
-      })
-      .catch(err => console.error('Error fetching user data:', err));
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user && data.user.farmId) {
+            const id = data.user.farmId._id;
+            setFarmId(id);
+            localStorage.setItem("farmId", id); // Store in localStorage
+          }
+        })
+        .catch((err) => console.error("Error fetching user data:", err));
     }
-  }, []);
+  }, [farmId]);
 
   const handleLogout = () => {
     // Clear all auth-related data
-    localStorage.removeItem('token');
-    
-    localStorage.removeItem('user');
-    localStorage.removeItem('farmId');
-    sessionStorage.clear();  
-    
-    const token = localStorage.getItem('token');
+    localStorage.removeItem("token");
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("farmId");
+    sessionStorage.clear();
+
+    const token = localStorage.getItem("token");
     if (token) {
-      fetch('/api/users/logout', {
-        method: 'POST',
+      fetch("/api/users/logout", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }).catch(err => console.error('Logout error:', err));
+          Authorization: `Bearer ${token}`,
+        },
+      }).catch((err) => console.error("Logout error:", err));
     }
-  
-    navigate('/login');
+
+    navigate("/login");
   };
 
   return (
@@ -233,11 +231,11 @@ const Sidebar = () => {
               primary={<span style={{ color: "black" }}>Insights</span>}
             />
           </ListItem>
-          {farmId && (
+          {
             <ListItem
               button
               component={Link}
-              to={`/WeatherDashboard/${farmId}`}
+              to={`/weather/${farmId}`}
               sx={{
                 "&:hover": { backgroundColor: "#f0f0f0" },
                 textDecoration: "none",
@@ -247,15 +245,15 @@ const Sidebar = () => {
                 <WbSunny />
               </ListItemIcon>
               <ListItemText
-                primary={<span style={{ color: "black" }}>Weather Dashboard</span>}
+                primary={<span style={{ color: "black" }}>Weather</span>}
               />
             </ListItem>
-          )}
+          }
         </List>
       </div>
 
       {/* Logout button */}
-      <List sx={{ marginTop: "auto" , marginBottom: 14}}>
+      <List sx={{ marginTop: "auto", marginBottom: 14 }}>
         <ListItem
           button
           onClick={handleLogout}

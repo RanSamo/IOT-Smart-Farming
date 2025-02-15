@@ -149,7 +149,7 @@ import FarmMap from "./components/FarmMap";
 import OverallHealthChart from "./components/OverallHealthChart";
 
 const Overview = () => {
-  const { farmId } = useParams();
+  const farmId = localStorage.getItem("farmId");
   const [loading, setLoading] = useState(true);
   const [sensorData, setSensorData] = useState({
     temperature: null,

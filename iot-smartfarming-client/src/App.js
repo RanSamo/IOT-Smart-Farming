@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Layout from "./Layout";
-import WeatherDashboard from "./Pages/WeatherDashboard/WeatherDashboard"; 
+import WeatherDashboard from "./Pages/WeatherDashboard/WeatherDashboard";
 import Overview from "./Pages/Overview/Overview";
 import Insights from "./Pages/Insights/Insights";
 import Login from "./Pages/Login/Login";
@@ -14,7 +14,6 @@ import SignUp from "./Pages/SignUp/SignUp";
 import { ThemeProvider } from "@mui/material";
 import mainTheme from "./Themes/mainTheme";
 import ProtectedRoute from "./reusable/ProtectedRoute";
-
 
 const App = () => {
   return (
@@ -46,8 +45,8 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-             <Route
-              path="/WeatherDashboard/:farmId"
+            <Route
+              path="/weather/:farmId"
               element={
                 <ProtectedRoute>
                   <WeatherDashboard />

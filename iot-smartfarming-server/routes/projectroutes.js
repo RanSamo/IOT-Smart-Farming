@@ -33,14 +33,14 @@ router.post("/api/insights", async (req, res) => {
   await getinsights(req, res);
 });
 
-// router.post("/weatherinsights/:farmId", async (req, res) => {
-//   await getWeatherInsights(req, res);
-// });
+router.post("/weatherinsights/:farmId", async (req, res) => {
+  await getWeatherInsights(req, res);
+});
 
 //front add
-router.post('/insights/:farmId', async (req, res) => {
-    await getinsights(req,res);
-});
+// router.post('/insights/:farmId', async (req, res) => {
+//     await getinsights(req,res);
+// });
 
 // GET one data
 router.get("/:id", getSingleData);

@@ -259,7 +259,8 @@ const Sidebar = () => {
           onClick={handleLogout}
           sx={{
             "&:hover": { backgroundColor: "#f0f0f0" },
-            color: "#f0f0f0",
+            textDecoration: "none",
+            cursor: "pointer", 
           }}
         >
           <ListItemIcon>

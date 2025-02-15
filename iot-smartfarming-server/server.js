@@ -4,9 +4,11 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 
 // routes calling
-const projectRoutes = require('./routes/projectroutes');
-const userRoutes = require('./routes/userroutes');
-const authRoutes = require('./routes/authentication');
+const projectRoutes = require("./routes/projectroutes");
+const userRoutes = require("./routes/userroutes");
+const authRoutes = require("./routes/authentication");
+const dailyforecastRoutes = require("./routes/dailyforecast");
+const weeklyforecastRoutes = require("./routes/weeklyforecast");
 
 // express app
 const app = express();

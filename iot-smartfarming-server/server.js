@@ -1,8 +1,7 @@
 require("dotenv").config();
-
-const express = require("express");
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
+const express = require('express')
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 
 // routes calling
 const projectRoutes = require("./routes/projectroutes");
@@ -26,14 +25,14 @@ app.use((req, res, next) => {
 });
 
 app.use(projectRoutes);
-app.use("/api/users", userRoutes);
-app.use("/auth", authRoutes);
-app.use("/api/weather", dailyforecastRoutes);
-app.use("/api/weather", weeklyforecastRoutes);
+app.use('/api/users', userRoutes);
+app.use('/auth', authRoutes); 
+app.use('/api/weather', projectRoutes);
+
 
 // Connect to mongodb
-mongoose
-  .connect(process.env.MONGO_URI)
+
+  mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(port, () => {
       console.log("connected to db & listening on port: ", port);

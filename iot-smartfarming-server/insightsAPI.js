@@ -24,7 +24,7 @@ async function getinsights(req, res) {
       messages: [
         {
           role: "system",
-          content: `You are are acting as a consulant for a farmer. The farmer is growing ${message}. Please provide a response as short as possible, and as decisive as possible to the farmer.`,
+          content: `You are acting as a consulant for a farmer. The farmer is growing ${message}. Please provide a response as short as possible, and as decisive as possible to the farmer.`,
         },
         {
           role: "user",

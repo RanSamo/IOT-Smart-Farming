@@ -70,7 +70,7 @@ const WeatherAlerts = (props) => {
     {
       id: 1,
       type: "rain",
-      message: "Rain expected within 3 hours. Check reservoir levels.",
+      message: " Check reservoir levels for expected rainfall on February 20th and 22nd.",
       icon: <LightCloudIcon sx={{ color: "#3b82f6", fontSize: "28px" }} />,
     },
     {

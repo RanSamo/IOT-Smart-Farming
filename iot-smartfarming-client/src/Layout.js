@@ -180,7 +180,7 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-        height: "105vh",
+        height: "100vh",
         padding: 2,
         backgroundColor: "#fff",
         boxShadow: 2,
@@ -253,13 +253,14 @@ const Sidebar = () => {
       </div>
 
       {/* Logout button */}
-      <List sx={{ marginTop: "auto", marginBottom: 14 }}>
+      <List sx={{ marginTop: "auto" }}>
         <ListItem
           button
           onClick={handleLogout}
           sx={{
             "&:hover": { backgroundColor: "#f0f0f0" },
-            color: "#f0f0f0",
+            textDecoration: "none",
+            cursor: "pointer",
           }}
         >
           <ListItemIcon>
@@ -279,7 +280,7 @@ const Layout = ({ children }) => (
     <Grid item sm={1.5}>
       <Sidebar />
     </Grid>
-    <Grid item sm={10.5} sx={{ overflowY: "auto", zIndex: 1 }}>
+    <Grid item sm={10.5} sx={{ overflowY: "hidden", zIndex: 1 }}>
       <Outlet>{children}</Outlet>
     </Grid>
   </Grid>

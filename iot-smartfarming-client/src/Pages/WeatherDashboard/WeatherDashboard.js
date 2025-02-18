@@ -70,7 +70,8 @@ const WeatherAlerts = (props) => {
     {
       id: 1,
       type: "rain",
-      message: " Check reservoir levels for expected rainfall on February 20th and 22nd.",
+      message:
+        " Check reservoir levels for expected rainfall on February 20th and 22nd.",
       icon: <LightCloudIcon sx={{ color: "#3b82f6", fontSize: "28px" }} />,
     },
     {
@@ -331,7 +332,11 @@ const WeatherDashboard = () => {
                         <Box>
                           <Typography
                             variant="h3"
-                            sx={{ fontWeight: 700, color: "#064e3b" }}
+                            sx={{
+                              fontWeight: 700,
+                              color: "#064e3b",
+                              fontSize: "2.2rem",
+                            }}
                           >
                             {currentWeather?.temperature?.current?.toFixed(1)}°C
                           </Typography>

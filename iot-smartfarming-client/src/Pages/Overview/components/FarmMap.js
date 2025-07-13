@@ -1,37 +1,37 @@
-import { React} from "react";
-import {
-  Typography,
-  Tooltip,
-} from "@mui/material";
-
-
+import { React } from "react";
+import { Typography, Tooltip } from "@mui/material";
 
 const FarmMap = () => {
   const sensors = [
-    { id: 1, x: 45, y: 45, health: 90 },
-    { id: 2, x: 195, y: 95, health: 20 },
-    { id: 3, x: 295, y: 45, health: 88 },
-    { id: 4, x: 445, y: 95, health: 55 },
-    { id: 5, x: 245, y: 345, health: 55 },
-    { id: 6, x: 395, y: 245, health: 50 },
-    { id: 7, x: 595, y: 295, health: 80 },
+    { id: 1, x: "6%", y: "11%" },
+    { id: 2, x: "28%", y: "24%" },
+    { id: 3, x: "42%", y: "11%" },
+    { id: 4, x: "63%", y: "24%" },
+    { id: 5, x: "35%", y: "86%" },
+    { id: 6, x: "56%", y: "61%" },
+    { id: 7, x: "85%", y: "74%" },
   ];
 
   const getColor = (health) => {
-    if (health >= 80) return "green"; // Green for health 80%+
-    if (health >= 50) return "orange"; // Orange for health 50%+
-    return "red"; // Red for health < 50%
+    if (health >= 80) return "green";
+    if (health >= 50) return "orange";
+    return "red";
   };
+
+  const sensorHealth = [90, 20, 88, 55, 55, 50, 80];
 
   return (
     <div
-      style={{
-        position: "relative",
-        width: "700px",
-        height: "400px",
-        border: "1px solid black",
-      }}
-    >
+  style={{
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    minHeight: "300px",
+    maxHeight: "500px",
+    aspectRatio: "7 / 4",
+    border: "1px solid black",
+  }}
+>
       {/* Grid lines */}
       <div
         style={{
@@ -40,7 +40,7 @@ const FarmMap = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundSize: "50px 50px",
+          backgroundSize: "7.14% 12.5%",
           backgroundImage:
             "linear-gradient(to right, gray 1px, transparent 1px), linear-gradient(to bottom, gray 1px, transparent 1px)",
         }}
@@ -52,37 +52,38 @@ const FarmMap = () => {
           position: "absolute",
           top: 0,
           left: 0,
-          width: "350px",
-          height: "200px",
+          width: "50%",
+          height: "50%",
           backgroundColor: "rgba(144, 238, 144, 0.3)",
         }}
       >
         <span
           style={{
             position: "absolute",
-            top: "90px",
-            left: "125px",
+            top: "45%",
+            left: "30%",
             color: "black",
           }}
         >
           Area A
         </span>
       </div>
+
       <div
         style={{
           position: "absolute",
           top: 0,
-          left: "350px",
-          width: "350px",
-          height: "200px",
+          left: "50%",
+          width: "50%",
+          height: "50%",
           backgroundColor: "rgba(255, 255, 0, 0.3)",
         }}
       >
         <span
           style={{
             position: "absolute",
-            top: "90px",
-            left: "125px",
+            top: "45%",
+            left: "30%",
             color: "black",
           }}
         >
@@ -90,22 +91,21 @@ const FarmMap = () => {
         </span>
       </div>
 
-      {/* Offices Area */}
       <div
         style={{
           position: "absolute",
-          top: "200px",
+          top: "50%",
           left: 0,
-          width: "200px",
-          height: "200px",
+          width: "28.5%",
+          height: "50%",
           backgroundColor: "rgba(173, 216, 230, 0.3)",
         }}
       >
         <span
           style={{
             position: "absolute",
-            top: "25px",
-            left: "70px",
+            top: "15%",
+            left: "30%",
             color: "black",
           }}
         >
@@ -113,22 +113,21 @@ const FarmMap = () => {
         </span>
       </div>
 
-      {/* Garden Area */}
       <div
         style={{
           position: "absolute",
-          top: "200px",
-          left: "200px",
-          width: "500px",
-          height: "200px",
+          top: "50%",
+          left: "28.5%",
+          width: "71.5%",
+          height: "50%",
           backgroundColor: "rgba(255, 192, 203, 0.3)",
         }}
       >
         <span
           style={{
             position: "absolute",
-            top: "100px",
-            left: "200px",
+            top: "50%",
+            left: "35%",
             color: "black",
           }}
         >
@@ -137,10 +136,10 @@ const FarmMap = () => {
       </div>
 
       {/* Sensors */}
-      {sensors.map((sensor) => (
+      {sensors.map((sensor, index) => (
         <Tooltip
           key={sensor.id}
-          title={`Health: ${sensor.health}%`}
+          title={`Health: ${sensorHealth[index]}%`}
           arrow
           placement="top"
           sx={{
@@ -157,12 +156,12 @@ const FarmMap = () => {
           <div
             style={{
               position: "absolute",
-              width: "10px",
-              height: "10px",
-              backgroundColor: getColor(sensor.health),
+              width: "1.5%",
+              height: "3%",
+              backgroundColor: getColor(sensorHealth[index]),
               borderRadius: "50%",
-              top: `${sensor.y}px`,
-              left: `${sensor.x}px`,
+              top: sensor.y,
+              left: sensor.x,
               cursor: "default",
               animation: "ripple 1.5s infinite",
             }}
@@ -185,9 +184,7 @@ const FarmMap = () => {
           boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
         }}
       >
-        <div
-          style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}
-        >
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
           <div
             style={{
               width: "10px",
@@ -201,9 +198,7 @@ const FarmMap = () => {
             Healthy (80%+)
           </Typography>
         </div>
-        <div
-          style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}
-        >
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
           <div
             style={{
               width: "10px",
@@ -228,28 +223,29 @@ const FarmMap = () => {
             }}
           />
           <Typography variant="body2" color="black">
-            Unhealthy (50%-)
+            Unhealthy (&lt; 50%)
           </Typography>
         </div>
       </div>
 
+      {/* Animation Keyframes */}
       <style>
         {`
-            @keyframes ripple {
-              0% {
-                transform: scale(1);
-                opacity: 1;
-              }
-              50% {
-                transform: scale(1.5);
-                opacity: 0.5;
-              }
-              100% {
-                transform: scale(1);
-                opacity: 1;
-              }
+          @keyframes ripple {
+            0% {
+              transform: scale(1);
+              opacity: 1;
             }
-          `}
+            50% {
+              transform: scale(1.5);
+              opacity: 0.5;
+            }
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}
       </style>
     </div>
   );

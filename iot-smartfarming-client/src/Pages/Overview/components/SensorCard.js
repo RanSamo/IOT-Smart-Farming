@@ -70,18 +70,20 @@ const SensorCard = ({ title, value, icon }) => {
   return (
     <Tooltip title={explanation} arrow>
       <Card
-        sx={{
-          borderRadius: 2,
-          backgroundColor: color,
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-          transition: "transform 0.2s ease-in-out",
-          "&:hover": {
-            transform: "translateY(-5px)",
-            boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
-          },
-          minWidth: "200px",
-        }}
-      >
+  sx={{
+    borderRadius: 2,
+    backgroundColor: color,
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.2s ease-in-out",
+    "&:hover": {
+      transform: "translateY(-5px)",
+      boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
+    },
+    minWidth: "160px", // ✅ יותר צר
+    maxWidth: "100%",  // למקרה של מסכים קטנים
+  }}
+>
+
         <CardContent>
           <Box
             display="flex"

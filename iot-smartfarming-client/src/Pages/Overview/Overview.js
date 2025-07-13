@@ -206,7 +206,16 @@ const Overview = () => {
 
   return (
     <Grid item xs={12} sm={12}>
-      <Box sx={{ p: 3, backgroundColor: "#eff2fa", minHeight: "100vh" }}>
+      <Box
+  sx={{
+    p: 3,
+    backgroundColor: "#eff2fa",
+    height: "100vh",
+    overflowY: "auto",
+    boxSizing: "border-box",
+  }}
+>
+
         {/* Header */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>

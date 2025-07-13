@@ -258,6 +258,7 @@ const Insights = () => {
   let aiText = "";
 
   const handleButtonClick = async (buttonNumber) => {
+    console.log("Farm ID from useParams:", farmId);
     setShowButtons(false);
     setShowBackButton(true);
     const response = await fetch(`/getLastData/${farmId}`);

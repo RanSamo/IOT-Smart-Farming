@@ -38,13 +38,21 @@ const App = () => {
               }
             />
             <Route
-              path="/insights"
+              path="/insights/:farmId"
               element={
                 <ProtectedRoute>
                   <Insights />
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/insights"
+              element={
+              <ProtectedRoute>
+                <Insights />
+              </ProtectedRoute>
+            }
+          />
             <Route
               path="/weather/:farmId"
               element={

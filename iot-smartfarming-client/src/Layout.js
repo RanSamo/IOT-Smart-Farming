@@ -215,7 +215,7 @@ const Sidebar = () => {
               primary={<span style={{ color: "black" }}>Overview</span>}
             />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             component={Link}
             to="/insights"
@@ -230,7 +230,25 @@ const Sidebar = () => {
             <ListItemText
               primary={<span style={{ color: "black" }}>Insights</span>}
             />
-          </ListItem>
+          </ListItem> */}
+          <ListItem
+  button
+  component={Link}
+  to={`/insights/${farmId}`}
+  disabled={!farmId} // אופציונלי - למנוע לחיצה אם עדיין לא נטען
+  sx={{
+    "&:hover": { backgroundColor: "#f0f0f0" },
+    textDecoration: "none",
+  }}
+>
+  <ListItemIcon>
+    <Sensors />
+  </ListItemIcon>
+  <ListItemText
+    primary={<span style={{ color: "black" }}>Insights</span>}
+  />
+</ListItem>
+
           {
             <ListItem
               button

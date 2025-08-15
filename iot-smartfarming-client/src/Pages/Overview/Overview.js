@@ -229,41 +229,83 @@ const Overview = () => {
   });
   const [healthTrendProcessed, setHealthTrendProcessed] = useState([]);
 
+  // useEffect(() => {
+  //   if (!farmId) return;
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(`/getLastData/${farmId}`);
+  //       const data = await response.json();
+
+  //       setSensorData({
+  //         temperature: data.lastData.temperature,
+  //         humidity: data.lastData.humidity,
+  //         soilMoisture: data.lastData.soilMoisture,
+  //         lightIntensity: data.lastData.lightIntensity,
+  //         pHLevel: data.lastData.phLevel,
+  //         cropHealth: data.lastData.cropHealth,
+  //         irrigationStatus: data.lastData.irrigationStatus,
+  //         weatherForecast: data.lastData.weatherForecast,
+  //       });
+
+  //       const transformedData = data.healthTrendData.map((item) => ({
+  //         date: item.date.split("T")[0],
+  //         health: item.healthScore.toFixed(2),
+  //         waterLevel: item.avgSoilMoisture.toFixed(2),
+  //         temperature: item.avgTemperature.toFixed(2),
+  //       }));
+
+  //       setHealthTrendProcessed(transformedData);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching sensor data:", error);
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [farmId]);
+
+
   useEffect(() => {
-    if (!farmId) return;
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/getLastData/${farmId}`);
-        const data = await response.json();
+  if (!farmId) return;
 
-        setSensorData({
-          temperature: data.lastData.temperature,
-          humidity: data.lastData.humidity,
-          soilMoisture: data.lastData.soilMoisture,
-          lightIntensity: data.lastData.lightIntensity,
-          pHLevel: data.lastData.phLevel,
-          cropHealth: data.lastData.cropHealth,
-          irrigationStatus: data.lastData.irrigationStatus,
-          weatherForecast: data.lastData.weatherForecast,
-        });
+  const fetchData = async () => {
+    try {
+      // 1️⃣ יוצרים נתונים חדשים
+      await fetch("/api/data", { method: "POST" });
 
-        const transformedData = data.healthTrendData.map((item) => ({
-          date: item.date.split("T")[0],
-          health: item.healthScore.toFixed(2),
-          waterLevel: item.avgSoilMoisture.toFixed(2),
-          temperature: item.avgTemperature.toFixed(2),
-        }));
+      // 2️⃣ שולפים את הנתונים האחרונים אחרי היצירה
+      const response = await fetch(`/getLastData/${farmId}`);
+      const data = await response.json();
 
-        setHealthTrendProcessed(transformedData);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching sensor data:", error);
-        setLoading(false);
-      }
-    };
+      setSensorData({
+        temperature: data.lastData.temperature,
+        humidity: data.lastData.humidity,
+        soilMoisture: data.lastData.soilMoisture,
+        lightIntensity: data.lastData.lightIntensity,
+        pHLevel: data.lastData.phLevel,
+        cropHealth: data.lastData.cropHealth,
+        irrigationStatus: data.lastData.irrigationStatus,
+        weatherForecast: data.lastData.weatherForecast,
+      });
 
-    fetchData();
-  }, [farmId]);
+      const transformedData = data.healthTrendData.map((item) => ({
+        date: item.date.split("T")[0],
+        health: item.healthScore.toFixed(2),
+        waterLevel: item.avgSoilMoisture.toFixed(2),
+        temperature: item.avgTemperature.toFixed(2),
+      }));
+
+      setHealthTrendProcessed(transformedData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching sensor data:", error);
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [farmId]);
 
   return (
     <Grid item xs={12}>
